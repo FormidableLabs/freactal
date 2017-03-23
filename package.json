@@ -1,0 +1,24 @@
+{
+  "name": "freactal",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/divmain/freactal.git"
+  },
+  "keywords": [
+    "react",
+    "state",
+    "hoc"
+  ],
+  "author": "Dale Bustad <dale@divmain.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/divmain/freactal/issues"
+  },
+  "homepage": "https://github.com/divmain/freactal#readme"
+}
