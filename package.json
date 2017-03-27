@@ -2,7 +2,7 @@
   "name": "freactal",
   "version": "0.2.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "npm run check && rm -rf lib/ && babel -d lib/ src/",
     "check": "npm run lint && npm run test",
