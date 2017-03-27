@@ -3,7 +3,7 @@ export const graftParentState = (state, parentState) => {
     Object.keys(parentState).forEach(parentKey => {
       if (parentKey in state) { return; }
       Object.defineProperty(state, parentKey, {
-        get: function () { return parentState[parentKey]; }
+        get () { return parentState[parentKey]; }
       });
     });
   }
@@ -11,6 +11,7 @@ export const graftParentState = (state, parentState) => {
 };
 
 export class HocState {
+  // eslint-disable-next-line max-params
   constructor (
     initialState,
     computed,
@@ -23,7 +24,7 @@ export class HocState {
     this.computedDependants = Object.create(null);
 
     this.computed = computed;
-    this.onChange = onChange
+    this.onChange = onChange;
     this.middleware = middleware;
 
     this.getTrackedState = this.getTrackedState.bind(this);
@@ -35,7 +36,7 @@ export class HocState {
 
     accessibleKeys.forEach(stateKey => {
       Object.defineProperty(stateProxy, stateKey, {
-        get: function () {
+        get () {
           computedDependants[stateKey] = computedDependants[stateKey] || Object.create(null);
           computedDependants[stateKey][computedKey] = true;
           return stateObj[stateKey];
@@ -45,10 +46,10 @@ export class HocState {
 
     return stateProxy;
   }
-  
+
   defineComputedStateProperties (state) {
     const { cachedState, getTrackedState, computed } = this;
-    
+
     const computedKeys = Object.keys(computed);
     const accessibleKeys = [].concat(computedKeys, Object.keys(state));
 
@@ -57,19 +58,19 @@ export class HocState {
 
       Object.defineProperty(state, computedKey, {
         enumerable: true,
-        get: function () {
+        get () {
           if (computedKey in cachedState) { return cachedState[computedKey]; }
           return cachedState[computedKey] = computed[computedKey](trackedState);
         }
       });
     });
   }
-  
+
   getState () {
     let state = Object.create(null);
     Object.assign(state, this.state);
     this.defineComputedStateProperties(state);
-    
+
     state = this.middleware.reduce(
       (memo, middleware) => middleware.transformState(memo),
       state
@@ -79,7 +80,6 @@ export class HocState {
   }
 
   invalidateCache (key) {
-    const { computedDependants } = this;
     const valuesDependingOnKey = Object.keys(this.computedDependants[key] || {});
 
     valuesDependingOnKey.forEach(dependantKey => {

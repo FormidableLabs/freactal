@@ -11,7 +11,7 @@ export const withState = opts => StatelessComponent => {
     effects = {},
     computed = {}
   } = opts;
-  
+
   class StatefulComponent extends Component {
     constructor (...args) {
       super(...args);
@@ -25,24 +25,24 @@ export const withState = opts => StatelessComponent => {
       this.hocEffects = getEffects(this.hocState, effects);
 
       this.middleware = this.middleware || [];
-      
+
       this.computed = computed;
     }
 
     getChildContext () {
-      const state = graftParentState(this.hocState.getState(), this.context.state);
-      const effects = Object.assign({}, this.context.effects, this.hocEffects);
-      return { state, effects };
+      return {
+        state: graftParentState(this.hocState.getState(), this.context.state),
+        effects: Object.assign({}, this.context.effects, this.hocEffects)
+      };
     }
-    
+
     render () {
-      const logKey = key => console.log(this.hocState[key]);
-      return <StatelessComponent {...this.props} logKey={logKey} set={this.hocState.set.bind(this.hocState)} />
+      return <StatelessComponent {...this.props} set={this.hocState.set.bind(this.hocState)} />;
     }
   }
 
   StatefulComponent.childContextTypes = contextTypes;
   StatefulComponent.contextTypes = contextTypes;
-  
+
   return StatefulComponent;
 };
