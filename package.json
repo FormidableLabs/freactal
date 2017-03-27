@@ -1,13 +1,16 @@
 {
   "name": "freactal",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
     "build": "npm run check && rm -rf lib/ && babel -d lib/ src/",
     "check": "npm run lint && npm run test",
     "test": "mocha spec/exec.js",
-    "lint": "eslint src spec"
+    "lint": "eslint src spec",
+    "prepublish": "npm run build",
+    "preversion": "npm run check",
+    "postversion": "npm publish && git push origin --tags"
   },
   "repository": {
     "type": "git",
