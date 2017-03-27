@@ -1,7 +1,7 @@
-import { withState, contextTypes } from "../..";
+import { contextTypes } from "../..";
 import { default as React } from "react";
 
-import * as effects from "./effects";
+import addState from "./state";
 
 
 export const App = (props, { state, effects }) => {
@@ -17,20 +17,5 @@ export const App = (props, { state, effects }) => {
 
 App.contextTypes = contextTypes;
 
-export const addState = withState({
-  effects,
-  initialState: () => ({
-    pending: false,
-    todos: null
-  }),
-  computed: {
-    todosType: ({ todos }) => typeof todos,
-    todosLength: ({ todos }) => todos && todos.length,
-    todosInfo: ({ todosType, todosLength, pending }) =>
-      pending ?
-        `waiting on the data...` :
-        `got a response of type '${todosType}' of length: ${todosLength}`
-  }
-});
 
 export default addState(App);
