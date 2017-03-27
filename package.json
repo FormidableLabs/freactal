@@ -4,7 +4,10 @@
   "description": "",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm run check && rm -rf lib/ && babel -d lib/ src/",
+    "check": "npm run lint && npm run test",
+    "test": "mocha spec/exec.js",
+    "lint": "eslint src spec"
   },
   "repository": {
     "type": "git",
@@ -20,5 +23,22 @@
   "bugs": {
     "url": "https://github.com/divmain/freactal/issues"
   },
-  "homepage": "https://github.com/divmain/freactal#readme"
+  "homepage": "https://github.com/divmain/freactal#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-eslint": "^7.2.1",
+    "babel-plugin-transform-react-jsx": "^6.23.0",
+    "babel-preset-latest": "^6.24.0",
+    "chai": "^3.5.0",
+    "eslint": "^3.18.0",
+    "eslint-config-formidable": "^2.0.1",
+    "eslint-plugin-filenames": "^1.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-react": "^6.10.3",
+    "mocha": "^3.2.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "sinon": "^2.1.0",
+    "sinon-chai": "^2.9.0"
+  }
 }

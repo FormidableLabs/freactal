@@ -1,0 +1,32 @@
+---
+extends:
+  - formidable/configurations/es6-react-test
+
+globals:
+  sinon: true
+  expect: true
+  global: true
+
+rules:
+  arrow-parens: off
+
+  func-style:
+    - error
+    - declaration
+    - allowArrowFunctions: true
+
+  space-before-function-paren:
+    - error
+    - always
+
+  no-return-assign: off
+
+  no-use-before-define: off
+
+  no-sequences: off
+
+  react/prop-types: off
+
+  react/no-multi-comp: off
+
+  no-unused-expressions: off
