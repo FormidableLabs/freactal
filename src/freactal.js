@@ -26,7 +26,7 @@ export const withState = opts => StatelessComponent => {
         cb => this.forceUpdate(cb)
       );
 
-      this.hocEffects = getEffects(this.hocState, effects);
+      this.effects = getEffects(this.hocState, effects);
 
       this.computed = computed;
     }
@@ -34,10 +34,14 @@ export const withState = opts => StatelessComponent => {
     getChildContext () {
       const context = {
         state: graftParentState(this.hocState.getState(), this.context.state),
-        effects: Object.assign({}, this.context.effects, this.hocEffects)
+        effects: Object.assign({}, this.context.effects, this.effects)
       };
 
       return middleware.reduce((memo, middlewareFn) => middlewareFn(memo), context);
+    }
+
+    getState () {
+      return this.hocState.state;
     }
 
     render () {

@@ -52,7 +52,7 @@ import { myEffect } from './effects';
 
 // ... <MyComponent /> is defined here
 
-const addState = withState(Component)({
+const addState = withState({
   effects: { myEffect },
   initialState: () => ({ inputValue: "" }),
   computed: {
@@ -81,7 +81,7 @@ These middleware functions can add properties to the `state`, generate new compu
 Here's an example:
 
 ```javascript
-const addState = withState(Component)({
+const addState = withState({
   effects: { ... },
   initialState: () => ({ ... }),
   computed: { ... },
@@ -104,21 +104,42 @@ When transforming state, keep in mind that any computed values of the object are
 Although it's normally inadvisable, this is actually a reasonable place to mutate the state object directly (i.e. `Object.assign(state, { myNew: "value" }).  This way you don't have to proxy the getters, and you leave all the computed values working in place.
 
 
-## Waiting on effects
+## Waiting on effects during SSR
 
-**TODO**
+If you're server-side rendering and want to 1) trigger effects, and 2) wait for them to transform your state before rendering, the following pattern will be of use to you:
+
 
 ```javascript
-import { StatefulComponent } from './stateful';
+import { StatefulRootComponent } from './stateful';
 import { renderFullPage } from './render-full-page';
 
 function handleRender(req, res) {
-  StatefulComponent
-    .awaitEffects({ /* ...props */ })
-    .then((vdom, state) => ({ html: renderToString(vdom), state}))
-    .then(({ html, state}) => renderFullPage(html, state))
-    .then(res.send.bind(res));
+  const statefulComponent = new StatefulRootComponent(props, context);
+  statefulComponent.effects.initialize().then(() => {
+    const html = renderToString(statefulComponent.render());
+    const fullHTML = renderFullPage(html, statefulComponent.getState());
+    res.send(fullHTML);
+  });
 }
 ```
 
-Maybe hook into `rapscallion`'s SSR mechanism that can wait for a particular component before rendering.  This will depend on
+... and then in your client bootstrap code:
+
+```javascript
+// stateful.js
+
+const addState = withState({
+  effects: { ... },
+  initialState: () => methodThatPullsStateFromSsrHtml(),
+  computed: { ... },
+  middleware: [ ... ]
+});
+
+export const StatefulRootComponent = addState(StatelessRootComponent);
+
+// bootstrap.js
+
+import { render } from "react-dom";
+import { StatefulRootComponent } from './stateful';
+render(<StatefulRootComponent />, document.querySelector("#app"));
+```
