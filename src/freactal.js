@@ -23,6 +23,8 @@ export const withState = opts => StatelessComponent => {
         // TODO: Batch updates (w/ requestAnimationFrame?) so that effect promises that resolve
         // at the same time (e.g. a data request completion, and the setting of a pending flag)
         // don't cause two renders.
+        //
+        // This might already be handled by React under the hood.
         cb => this.forceUpdate(cb)
       );
 
