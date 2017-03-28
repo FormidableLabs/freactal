@@ -2,6 +2,7 @@ import { contextTypes } from "../..";
 import { default as React } from "react";
 
 import addState from "./state";
+import ChildComponent from "./child-component";
 
 
 export const App = (props, { state, effects }) => {
@@ -12,6 +13,10 @@ export const App = (props, { state, effects }) => {
       <button onClick={() => effects.fetchTodos("https://jsonplaceholder.typicode.com/todos")}>
         Click me to fetch!
       </button>
+      <div>
+        And here's the child:
+        <ChildComponent />
+      </div>
     </div>
   );
 };
