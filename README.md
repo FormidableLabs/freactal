@@ -45,14 +45,14 @@ Your effects will be grafted onto a particular component subtree by a state high
 ## State HOC
 
 ```javascript
-import { stateHoc } from 'freactal';
+import { withState } from 'freactal';
 import { Component } from 'preact';
 
 import { myEffect } from './effects';
 
 // ... <MyComponent /> is defined here
 
-const withState = stateHoc(Component)({
+const addState = withState(Component)({
   effects: { myEffect },
   initialState: () => ({ inputValue: "" }),
   computed: {
@@ -64,7 +64,7 @@ const withState = stateHoc(Component)({
   }
 });
 
-export default withState(MyComponent);
+export default addState(MyComponent);
 ```
 
 Computed values are cached to avoid unnecessary work.  When their dependencies change, the cached computations are invalidated and are recomputed the next time they're accessed.  For example, `inputValue` is a dependency of `inputValueType` in the example above, and its cached value would be invalidated as soon as `inputValue` changed.
