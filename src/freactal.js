@@ -9,7 +9,8 @@ export const withState = opts => StatelessComponent => {
   const {
     initialState = null,
     effects = {},
-    computed = {}
+    computed = {},
+    middleware = []
   } = opts;
 
   class StatefulComponent extends Component {
@@ -27,16 +28,16 @@ export const withState = opts => StatelessComponent => {
 
       this.hocEffects = getEffects(this.hocState, effects);
 
-      this.middleware = this.middleware || [];
-
       this.computed = computed;
     }
 
     getChildContext () {
-      return {
+      const context = {
         state: graftParentState(this.hocState.getState(), this.context.state),
         effects: Object.assign({}, this.context.effects, this.hocEffects)
       };
+
+      return middleware.reduce((memo, middlewareFn) => middlewareFn(memo), context);
     }
 
     render () {

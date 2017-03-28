@@ -70,6 +70,40 @@ export default addState(MyComponent);
 Computed values are cached to avoid unnecessary work.  When their dependencies change, the cached computations are invalidated and are recomputed the next time they're accessed.  For example, `inputValue` is a dependency of `inputValueType` in the example above, and its cached value would be invalidated as soon as `inputValue` changed.
 
 
+## Middleware
+
+Freactal supports a simple middleware interface.
+
+When calling `withState` to create your stateful wrapper, you can pass in a `middleware` property.  The corresponding value should be an array of functions.  Each function accepts a single object argument of shape `{ state, effects }` and returns an object of the same shape.
+
+These middleware functions can add properties to the `state`, generate new computed properties, wrap effect functions, etc.
+
+Here's an example:
+
+```javascript
+const addState = withState(Component)({
+  effects: { ... },
+  initialState: () => ({ ... }),
+  computed: { ... },
+  middleware: [
+    ({ state, effects }) => ({
+      state,
+      effects: {
+        ...effects,
+        log: msg => console.log(msg)
+      }
+    })
+  ]
+});
+```
+
+In this example, the middleware does nothing to transform the state.  But it does add an extra function to the effects collection: `log`.
+
+When transforming state, keep in mind that any computed values of the object are implemented with a ES5 getter.  This means you should not `Object.assign({}, state, { myNew: "value" })`.  If you do this, `Object.assign` will read the values from the original state object inside your middleware function and they won't be computed at run-time.
+
+Although it's normally inadvisable, this is actually a reasonable place to mutate the state object directly (i.e. `Object.assign(state, { myNew: "value" }).  This way you don't have to proxy the getters, and you leave all the computed values working in place.
+
+
 ## Waiting on effects
 
 **TODO**
