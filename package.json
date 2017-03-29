@@ -46,5 +46,8 @@
     "react-dom": "^15.4.2",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }

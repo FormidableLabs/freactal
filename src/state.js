@@ -1,3 +1,6 @@
+import { HYDRATE } from "./common";
+
+
 export const graftParentState = (state, parentState) => {
   if (parentState) {
     Object.keys(parentState).forEach(parentKey => {
@@ -104,3 +107,14 @@ export class HocState {
     return new Promise(resolve => this.onChange(resolve));
   }
 }
+
+export const hydrate = bootstrapState => (props, context) => {
+  if (context.__getNextContainerState__) {
+    return context.__getNextContainerState__();
+  }
+
+  let containerIdx = 1;
+  return Object.assign({
+    [HYDRATE]: () => bootstrapState[containerIdx++]
+  }, bootstrapState[0]);
+};

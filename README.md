@@ -110,14 +110,17 @@ If you're server-side rendering and want to 1) trigger effects, and 2) wait for 
 
 
 ```javascript
+import { initialize } from "freactal/server";
+
 import { StatefulRootComponent } from './stateful';
 import { renderFullPage } from './render-full-page';
 
 function handleRender(req, res) {
   const statefulComponent = new StatefulRootComponent(props, context);
-  statefulComponent.effects.initialize().then(() => {
-    const html = renderToString(statefulComponent.render());
-    const fullHTML = renderFullPage(html, statefulComponent.getState());
+
+  initialize(<StatefulRootComponent />).then(({ vdom, state }) => {
+    const html = renderToString(vdom);
+    const fullHTML = renderFullPage(html, state);
     res.send(fullHTML);
   });
 }
@@ -128,9 +131,13 @@ function handleRender(req, res) {
 ```javascript
 // stateful.js
 
+import { hydrate } from "freactal";
+
 const addState = withState({
   effects: { ... },
-  initialState: () => methodThatPullsStateFromSsrHtml(),
+  initialState: IS_BROWSER ?
+    hydrate(getSsrStateJsonFromDom()) :
+    () => ({ ... }),
   computed: { ... },
   middleware: [ ... ]
 });

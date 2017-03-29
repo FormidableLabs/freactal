@@ -1,3 +1,6 @@
+import "isomorphic-fetch";
+
+
 const update = newState => state => Object.assign({}, state, newState);
 const hardUpdate = newState => update(newState);
 
@@ -17,3 +20,6 @@ export const fetchTodos = (effects, url) => wrapWithPending(
     .then(json => update({ todos: json }))
 );
 
+export const initialize = effects => fetch("https://jsonplaceholder.typicode.com/todos")
+  .then(result => result.json())
+  .then(json => update({ todos: json }));
