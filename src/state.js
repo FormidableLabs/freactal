@@ -18,8 +18,7 @@ export class HocState {
   constructor (
     initialState,
     computed,
-    onChange,
-    middleware = []
+    onChange
   ) {
     this.state = initialState;
 
@@ -28,7 +27,6 @@ export class HocState {
 
     this.computed = computed;
     this.onChange = onChange;
-    this.middleware = middleware;
 
     this.getTrackedState = this.getTrackedState.bind(this);
   }
@@ -70,15 +68,9 @@ export class HocState {
   }
 
   getState () {
-    let state = Object.create(null);
+    const state = Object.create(null);
     Object.assign(state, this.state);
     this.defineComputedStateProperties(state);
-
-    state = this.middleware.reduce(
-      (memo, middleware) => middleware.transformState(memo),
-      state
-    );
-
     return state;
   }
 
