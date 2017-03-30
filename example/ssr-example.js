@@ -13,4 +13,7 @@ initialize(<StatefulRootComponent />)
     console.log("\n==================================== HTML ======================================");
     const html = renderToString(vdom);
     console.log(html);
+  })
+  .catch(err => {
+    console.log(err && err.stack ? err.stack : err);
   });
