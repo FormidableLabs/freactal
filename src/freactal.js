@@ -56,6 +56,7 @@ export const withState = opts => StatelessComponent => {
     }
 
     componentDidMount () {
+      if (this.effects.initialize) { this.effects.initialize(); }
       this.mounted = true;
     }
 
