@@ -6,6 +6,7 @@ export const graftParentState = (state, parentState) => {
     Object.keys(parentState).forEach(parentKey => {
       if (parentKey in state) { return; }
       Object.defineProperty(state, parentKey, {
+        enumerable: true,
         get () { return parentState[parentKey]; }
       });
     });
@@ -48,11 +49,11 @@ export class HocState {
     return stateProxy;
   }
 
-  defineComputedStateProperties (state) {
+  defineComputedStateProperties (state, parentKeys) {
     const { cachedState, getTrackedState, computed } = this;
 
     const computedKeys = Object.keys(computed);
-    const accessibleKeys = [].concat(computedKeys, Object.keys(state));
+    const accessibleKeys = [].concat(computedKeys, Object.keys(state), parentKeys);
 
     computedKeys.forEach(computedKey => {
       const trackedState = getTrackedState(computedKey, state, accessibleKeys);
@@ -67,10 +68,10 @@ export class HocState {
     });
   }
 
-  getState () {
+  getState (parentKeys) {
     const state = Object.create(null);
     Object.assign(state, this.state);
-    this.defineComputedStateProperties(state);
+    this.defineComputedStateProperties(state, parentKeys);
     return state;
   }
 

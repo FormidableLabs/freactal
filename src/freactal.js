@@ -40,8 +40,9 @@ export const withState = opts => StatelessComponent => {
         this.context.__captureState__(this.hocState.state);
       }
 
+      const parentKeys = this.context.state ? Object.keys(this.context.state) : [];
       const context = {
-        state: graftParentState(this.hocState.getState(), this.context.state),
+        state: graftParentState(this.hocState.getState(parentKeys), this.context.state),
         effects: Object.assign({}, this.context.effects, this.effects)
       };
 
