@@ -1,5 +1,7 @@
 export const getEffects = (hocState, effectDefs) => {
-  const applyReducer = reducer => hocState.setState(reducer(hocState.state));
+  const applyReducer = reducer => reducer ?
+    hocState.setState(reducer(hocState.state)) :
+    null;
 
   const effects = Object.keys(effectDefs).reduce((memo, effectKey) => {
     const effectFn = effectDefs[effectKey];
