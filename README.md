@@ -60,7 +60,7 @@ Your effects will be grafted onto a particular component subtree by a state high
 
 ```javascript
 import { withState } from 'freactal';
-import { Component } from 'preact';
+import { Component } from 'react';
 
 import { myEffect } from './effects';
 
