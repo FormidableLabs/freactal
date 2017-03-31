@@ -1,5 +1,18 @@
 # fr(e)actal
 
+`freactal` is a Flux-like-but-not-flux state-management library for React.  It concerves principles of unidirectional flow of data, but embraces some friendlier patterns borrowed from Vue.js, MobX and others.  From your stack, it can replace `redux`, `reselect`, `redux-loop`, `[fill-in-the-blank sub-app composition technique]` and potentially `recompose` (depending on how you're using it) with what is hopefully a simpler and clearer abstraction.
+
+Here are some of the pain-points it addresses and features it brings to the table:
+
+- It eschews boilerplate, which makes it easier to co-locate related pieces of code.
+- It does not use a singleton for state, instead allowing you to augment your application with state wherever it makes the most sense.
+- Seeing as this ^^^ is the case, it becomes easy to compose multiple "apps" together in a straightforward way - in fact, it's just as straightforward as anything else you'd build.  Ultimately, this allows you to retain the React philosophy of "these are just components and you can compose them however you'd like".
+- It obviates the need for libraries like `reselect` through its introduction of computed state values.
+- It is easy to access state wherever you are in the component tree (including parent state), without having to `connect`.
+- Middleware is dead simple.
+- SSR and client-side state hydration are also both dead simple.
+
+
 ## Effects
 
 Effects are functions that return a promise.  They accept two or more arguments, where the first two arguments are the same for every effect.  Here's what an effect looks like:
