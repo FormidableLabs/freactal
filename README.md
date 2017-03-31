@@ -11,6 +11,7 @@ Here are some of the pain-points it addresses and features it brings to the tabl
 - It is easy to access state wherever you are in the component tree (including parent state), without having to `connect`.
 - Middleware is dead simple.
 - SSR and client-side state hydration are also both dead simple.
+- Components and state can easily be tested in isolation.
 
 
 ## Effects
