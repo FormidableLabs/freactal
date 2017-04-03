@@ -69,7 +69,7 @@ export const withState = opts => StatelessComponent => {
     }
 
     render () {
-      return <StatelessComponent {...this.props} set={this.hocState.set.bind(this.hocState)} />;
+      return <StatelessComponent {...this.props} />;
     }
   }
 
