@@ -14,6 +14,40 @@ Here are some of the pain-points it addresses and features it brings to the tabl
 - Components and state can easily be tested in isolation.
 
 
+## Example: Counter
+
+Here `freactal` is used to make a simple incremental counter:
+
+```javascript
+import React from "react";
+import { contextTypes, withState } from "freactal";
+
+// state and effects are sent in the context of App, not the props
+const App = (props, { state, effects }) => (
+  <div>
+    <h1>{state.value}</h1>
+    <button onClick={() => effects.add(1)}>+1</button>
+    <button onClick={() => effects.add(10)}>+10</button>
+    <button onClick={() => effects.reset()}>reset</button>
+  </div>
+);
+
+// add freactal's contextTypes, so App can get state and effects from the context
+App.contextTypes = contextTypes;
+
+const addState = withState({
+  // each effect returns a reducer function which produces a new state
+  effects: {
+    reset: (effects) => state => Object.assign({}, state, { value: 0 }),  
+    add: (effects, amount) => state => Object.assign({}, state, { value: state.value + amount }),
+  },
+  initialState: () => ({ value: 0 }),
+});
+
+// finally, we add the `freactal` state and effects to our App component
+export default addState(App);
+```
+
 ## Effects
 
 Effects are functions that return a promise.  They accept two or more arguments, where the first two arguments are the same for every effect.  Here's what an effect looks like:
