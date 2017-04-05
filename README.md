@@ -39,7 +39,7 @@ const addState = withState({
   // each effect returns a reducer function which produces a new state
   effects: {
     reset: (effects) => state => Object.assign({}, state, { value: 0 }),  
-    add: (effects, ammount) => state => Object.assign({}, state, { value: state.value + ammount }),
+    add: (effects, amount) => state => Object.assign({}, state, { value: state.value + amount }),
   },
   initialState: () => ({ value: 0 }),
 });
