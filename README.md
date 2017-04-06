@@ -149,7 +149,7 @@ In this example, the middleware does nothing to transform the state.  But it doe
 
 When transforming state, keep in mind that any computed values of the object are implemented with a ES5 getter.  This means you should not `Object.assign({}, state, { myNew: "value" })`.  If you do this, `Object.assign` will read the values from the original state object inside your middleware function and they won't be computed at run-time.
 
-Although it's normally inadvisable, this is actually a reasonable place to mutate the state object directly (i.e. `Object.assign(state, { myNew: "value" }).  This way you don't have to proxy the getters, and you leave all the computed values working in place.
+Although it's normally inadvisable, this is actually a reasonable place to mutate the state object directly (i.e. `Object.assign(state, { myNew: "value" })`.  This way you don't have to proxy the getters, and you leave all the computed values working in place.
 
 
 ## Waiting on effects during SSR
