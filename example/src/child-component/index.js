@@ -1,4 +1,4 @@
-import { withState, contextTypes } from "../../..";
+import { withState, injectState } from "../../..";
 import { default as React } from "react";
 
 import * as effectDefs from "./effects";
@@ -7,7 +7,7 @@ import computed from "./computed";
 
 export const addState = withState({ effects: effectDefs, initialState, computed });
 
-export const ChildComponent = (props, { state, effects }) => (
+export const ChildComponent = ({ state, effects }) => (
   <div>
     <div>This is a subcomponent, with its own state!</div>
     <div>{`Here is a local value '${state.localValue}' and its computed length '${state.localValueLength}'`}</div>
@@ -20,6 +20,4 @@ export const ChildComponent = (props, { state, effects }) => (
   </div>
 );
 
-ChildComponent.contextTypes = contextTypes;
-
-export default addState(ChildComponent);
+export default addState(injectState(ChildComponent));
