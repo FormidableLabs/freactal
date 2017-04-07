@@ -81,15 +81,16 @@ export const withState = opts => StatelessComponent => {
       );
     }
 
-    pushUpdate (afterUpdate, changedKeys) {
-      // In an SSR environment, the component will not yet have rendered, and the child
-      // context will not yet be generated.  The subscribers don't need to be notified,
-      // as they will contain correct context on their initial render.
-      if (this.childContext) {
-        Object.assign(this.childContext, this.buildContext(changedKeys));
-        this.subscribers.forEach(cb => cb && cb());
-      }
-      afterUpdate();
+    pushUpdate (changedKeys) {
+      return Promise.resolve().then(() => {
+        // In an SSR environment, the component will not yet have rendered, and the child
+        // context will not yet be generated.  The subscribers don't need to be notified,
+        // as they will contain correct context on their initial render.
+        if (this.childContext) {
+          Object.assign(this.childContext, this.buildContext(changedKeys));
+          this.subscribers.forEach(cb => cb && cb());
+        }
+      });
     }
 
     getState () {

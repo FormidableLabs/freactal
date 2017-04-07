@@ -101,7 +101,7 @@ export class HocState {
       this.set(key, newState[key]);
       changedKeys[key] = oldState[key] === newState[key];
     });
-    return new Promise(resolve => this.onChange(resolve, changedKeys));
+    return this.onChange(changedKeys);
   }
 }
 
