@@ -21,47 +21,75 @@ export const withState = opts => StatelessComponent => {
       this.hocState = new HocState(
         initialState && initialState(this.props, this.context) || Object.create(null),
         computed,
-        // TODO: Batch updates (w/ requestAnimationFrame?) so that effect promises that resolve
-        // at the same time (e.g. a data request completion, and the setting of a pending flag)
-        // don't cause two renders.
-        //
-        // This might already be handled by React under the hood.
-        cb => this.mounted ? this.forceUpdate(cb) : cb()
+        this.pushUpdate.bind(this)
       );
 
       this.effects = getEffects(this.hocState, effects);
 
       this.computed = computed;
+
+      this.subscribe = this.subscribe.bind(this);
+      this.nextSubscriberId = 0;
+      this.subscribers = [];
     }
 
     getChildContext () {
+      const parentContext = this.context.freactal || {};
+
       // Capture container state while server-side rendering.
-      if (this.context.__captureState__) {
-        this.context.__captureState__(this.hocState.state);
+      if (parentContext.captureState) {
+        parentContext.captureState(this.hocState.state);
       }
 
-      const parentKeys = this.context.state ? Object.keys(this.context.state) : [];
-      const context = {
-        state: graftParentState(this.hocState.getState(parentKeys), this.context.state),
-        effects: Object.assign({}, this.context.effects, this.effects)
-      };
+      const childContext = this.childContext = this.buildContext();
 
       // Provide context for sub-component state re-hydration.
       if (this.hocState.state[HYDRATE]) {
-        context.__getNextContainerState__ = this.hocState.state[HYDRATE];
+        childContext.getNextContainerState = this.hocState.state[HYDRATE];
         delete this.hocState.state[HYDRATE];
       }
 
-      return middleware.reduce((memo, middlewareFn) => middlewareFn(memo), context);
+      return {
+        freactal: Object.assign({}, parentContext, childContext)
+      };
     }
 
     componentDidMount () {
       if (this.effects.initialize) { this.effects.initialize(); }
-      this.mounted = true;
     }
 
-    componentWillUnmount () {
-      this.mounted = false;
+    subscribe (onUpdate) {
+      const subscriberId = this.nextSubscriberId++;
+      this.subscribers[subscriberId] = onUpdate;
+      return () => {
+        this.subscribers[subscriberId] = null;
+      };
+    }
+
+    buildContext (changedKeys) {
+      const parentContext = this.context.freactal || {};
+      const parentKeys = parentContext.state ? Object.keys(parentContext.state) : [];
+
+      return middleware.reduce(
+        (memo, middlewareFn) => middlewareFn(memo),
+        {
+          state: graftParentState(this.hocState.getState(parentKeys), parentContext.state),
+          effects: Object.assign({}, parentContext.effects, this.effects),
+          subscribe: this.subscribe,
+          changedKeys: Object.assign({}, parentContext.changedKeys, changedKeys)
+        }
+      );
+    }
+
+    pushUpdate (afterUpdate, changedKeys) {
+      // In an SSR environment, the component will not yet have rendered, and the child
+      // context will not yet be generated.  The subscribers don't need to be notified,
+      // as they will contain correct context on their initial render.
+      if (this.childContext) {
+        Object.assign(this.childContext, this.buildContext(changedKeys));
+        this.subscribers.forEach(cb => cb && cb());
+      }
+      afterUpdate();
     }
 
     getState () {
