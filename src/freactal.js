@@ -6,7 +6,7 @@ import { contextTypes } from "./context";
 import { HYDRATE } from "./common";
 
 
-export const withState = opts => StatelessComponent => {
+export const provideState = opts => StatelessComponent => {
   const {
     initialState = null,
     effects = {},

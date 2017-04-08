@@ -1,11 +1,11 @@
-import { withState, injectState } from "../../..";
+import { provideState, injectState } from "../../..";
 import { default as React } from "react";
 
 import * as effectDefs from "./effects";
 import initialState from "./initial-state";
 import computed from "./computed";
 
-export const addState = withState({ effects: effectDefs, initialState, computed });
+export const withState = provideState({ effects: effectDefs, initialState, computed });
 
 export const ChildComponent = ({ state, effects }) => (
   <div>
@@ -20,4 +20,4 @@ export const ChildComponent = ({ state, effects }) => (
   </div>
 );
 
-export default addState(injectState(ChildComponent));
+export default withState(injectState(ChildComponent));

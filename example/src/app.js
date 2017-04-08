@@ -1,7 +1,7 @@
 import { injectState } from "../..";
 import { default as React } from "react";
 
-import addState from "./state";
+import withState from "./state";
 import ChildComponent from "./child-component";
 
 
@@ -22,4 +22,4 @@ export const App = ({ rootProp, state, effects }) => {
 };
 
 
-export default addState(injectState(App));
+export default withState(injectState(App));

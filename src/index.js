@@ -1,3 +1,3 @@
-export { withState } from "./freactal";
+export { provideState } from "./freactal";
 export { hydrate } from "./state";
 export { injectState } from "./inject";
