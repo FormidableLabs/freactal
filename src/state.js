@@ -96,14 +96,18 @@ export class HocState {
   setState (newState) {
     const oldState = this.state;
     const allKeys = Object.keys(Object.assign({}, oldState, newState));
-    allKeys.forEach(key => this.set(key, newState[key]));
-    return new Promise(resolve => this.onChange(resolve));
+    const changedKeys = Object.create(null);
+    allKeys.forEach(key => {
+      this.set(key, newState[key]);
+      changedKeys[key] = oldState[key] === newState[key];
+    });
+    return this.onChange(changedKeys);
   }
 }
 
 export const hydrate = bootstrapState => (props, context) => {
-  if (context.__getNextContainerState__) {
-    return context.__getNextContainerState__();
+  if (context.freactal && context.freactal.getNextContainerState) {
+    return context.freactal.getNextContainerState();
   }
 
   let containerIdx = 1;
