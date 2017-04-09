@@ -3,7 +3,7 @@
 **TODO**
 
 
-----
+<br><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="100" width="100" /></p><br>
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -29,7 +29,7 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 
-----
+<br><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="100" width="100" /></p><br>
 
 ## Guide
 
@@ -56,14 +56,14 @@
 **TODO: referencing compound values from child state container**
 
 
-----
+<br><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="100" width="100" /></p><br>
 
 ## Architecture
 
 **TODO**
 
 
-----
+<br><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="100" width="100" /></p><br>
 
 ## API Documentation
 
@@ -96,7 +96,7 @@
 **TODO**
 
 
-----
+<br><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="100" width="100" /></p><br>
 
 ## Helper functions
 
@@ -111,7 +111,7 @@
 **TODO**
 
 
-----
+<br><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="100" width="100" /></p><br>
 
 ## Server-side Rendering
 
