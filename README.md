@@ -90,7 +90,7 @@ const Parent = ({ state }) => (
 render(<Parent />, document.getElementById("root"));
 ```
 
-That's a _very_ basic React app.  Let's see what it looks like to include add some very basic state to that application.
+That's a _very_ basic React app.  Let's see what it looks like to add some very basic state to that application.
 
 ```javascript
 import React, { Component } from "react";
