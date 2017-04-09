@@ -39,6 +39,7 @@ Readability counts.
   - [`provideState`](#providestate)
     - [`initialState`](#initialstate)
     - [`effects`](#effects)
+      - [`initialize`](#initialize)
     - [`computed`](#computed)
     - [`middleware`](#middleware)
   - [`injectState`](#injectstate)
@@ -199,6 +200,10 @@ That'll work just fine!
 **TODO**
 
 #### `effects`
+
+**TODO**
+
+##### `initialize`
 
 **TODO**
 
