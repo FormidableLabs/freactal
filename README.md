@@ -145,7 +145,43 @@ That'll work just fine!
 
 ### Accessing state from a child component
 
-**TODO**
+As was mentioned above, the `provideState`-wrapped component isn't really the one that provides access to state.  That's `injectState`'s job.  So what would stop you from injecting state into a child component, one that isn't containing state itself?  The answer is nothing!
+
+Let's modify the example so that we're injecting state into a child component.
+
+```javascript
+import React, { Component } from "react";
+import { render } from "react-dom";
+import { provideState, injectState } from "freactal";
+
+
+const Child = injectState(({ state }) => (
+  <div>
+    { `Our counter is at: ${state.counter}` }
+  </div>
+));
+
+const wrapComponentWithState = provideState({
+  initialState: () => ({ counter: 0 })
+});
+
+const Parent = wrapComponentWithState(({ state }) => (
+  <Child />
+));
+
+
+render(<Parent />, document.getElementById("root"));
+```
+
+Let's review what's going on here.
+
+1. Using `provideState`, we define a state-container template intended to store a single piece of state: the `counter`.
+2. That template is applied to the `Parent` component.
+3. When the `Parent` is rendered, we see that it references a `Child` component.
+4. That `Child` component is wrapped with `injectState`.
+5. Because `Child` is contained within the subtree where `Parent` is the root node, it has access to the `Parent` component's state.
+
+We could insert another component at the end, and `injectState` into the `GrandChild` component, and it would work the same.
 
 
 ### Transforming state
