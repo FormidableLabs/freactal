@@ -26,8 +26,7 @@ Readability counts.
 ## Table of Contents
 
 - [Guide](#guide)
-  - [Containing state with an HOC](#containing-state-with-an-hoc)
-  - [Accessing state from a top-level component](#accessing-state-from-a-top-level-component)
+  - [Containing state](#containing-state)
   - [Accessing state from a child component](#accessing-state-from-a-child-component)
   - [Transforming state](#transforming-state)
   - [Transforming state asynchronously](#transforming-state-asynchronously)
@@ -58,17 +57,89 @@ Readability counts.
 
 ## Guide
 
-**TODO**
+This guide is intended to get you familiar with the `freactal` way of doing things.  If you're looking for something specific, take a look at the [API Documentation](#api-documentation).  If you're just starting out with `freactal`, read on!
 
 
-### Containing state with an HOC
+### Containing state
 
-**TODO**
+Most state management solutions for React put all state in one place.  `freactal` doesn't suffer from that constraint, but it is a good place to start.  So let's see what that might look like.
 
+```javascript
+import { provideState } from "freactal";
 
-### Accessing state from a top-level component
+const wrapComponentWithState = provideState({
+  initialState: () => ({ counter: 0 })
+});
+```
 
-**TODO**
+In the above example, we define a new state container type using `provideState`, and provide it an argument.  You can think about the arguments passed to `provideState` as the schema for your state container; we'll get more familiar with the other possible arguments later in the guide.
+
+The `initialState` function is invoked whenever the component that it is wrapping is instantiated.  But so far, our state container is not wrapping anything, so let's expand our example a bit.
+
+```javascript
+import React, { Component } from "react";
+import { render } from "react-dom";
+
+const Parent = ({ state }) => (
+  <div>
+    { `Our counter is at: ${state.counter}` }
+  </div>
+);
+
+render(<Parent />, document.getElementById("root"));
+```
+
+That's a _very_ basic React app.  Let's see what it looks like to include add some very basic state to that application.
+
+```javascript
+import React, { Component } from "react";
+import { render } from "react-dom";
+import { provideState } from "freactal";
+
+const wrapComponentWithState = provideState({
+  initialState: () => ({ counter: 0 })
+});
+
+const Parent = wrapComponentWithState(({ state }) => (
+  <div>
+    { `Our counter is at: ${state.counter}` }
+  </div>
+));
+
+render(<Parent />, document.getElementById("root"));
+```
+
+Alright, we're getting close.  But we're missing one important piece: `injectState`.
+
+Like `provideState`, `injectState` is a component wrapper.  It links your application component with the state that it has access to.
+
+It may not be readily apparent to you why `injectState` is necessary, so let's make it clear what each `freactal` function is doing.  With `provideState`, you define a state template that can then be applied to any component.  Once applied, that component will act as a "headquarters" for a piece of state and the effects that transform it (more on that later).  If you had a reason, the same template could be applied to multiple components, and they'd each have their own state based on the template you defined.
+
+But that only _tracks_ state.  It doesn't make that state accessible to the developer.  That's what `injectState` is for.
+
+In early versions of `freactal`, the state was directly accessible to the component that `provideState` wrapped.  However, that meant that whenever a state change occurred, the entire tree would need to re-render.  `injectState` intelligently tracks which pieces of state that you actually access, and a re-render only occurs when _those_ pieces of state undergo a change.
+
+Alright, so let's finalize our example with all the pieces in play.
+
+```javascript
+import React, { Component } from "react";
+import { render } from "react-dom";
+import { provideState, injectState } from "freactal";
+
+const wrapComponentWithState = provideState({
+  initialState: () => ({ counter: 0 })
+});
+
+const Parent = wrapComponentWithState(injectState(({ state }) => (
+  <div>
+    { `Our counter is at: ${state.counter}` }
+  </div>
+)));
+
+render(<Parent />, document.getElementById("root"));
+```
+
+That'll work just fine!
 
 
 ### Accessing state from a child component
