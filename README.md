@@ -28,6 +28,15 @@ Readability counts.
 **Table of Contents**
 
 - [Guide](#guide)
+  - [Containing state with an HOC](#containing-state-with-an-hoc)
+  - [Accessing state from a top-level component](#accessing-state-from-a-top-level-component)
+  - [Accessing state from a child component](#accessing-state-from-a-child-component)
+  - [Transforming state](#transforming-state)
+  - [Transforming state asynchronously](#transforming-state-asynchronously)
+  - [Transforming state from a child](#transforming-state-from-a-child)
+  - [Intermediate state](#intermediate-state)
+  - [Computed state values](#computed-state-values)
+  - [Composing multiple state containers](#composing-multiple-state-containers)
 - [Architecture](#architecture)
 - [API Documentation](#api-documentation)
   - [`provideState`](#providestate)
@@ -43,6 +52,7 @@ Readability counts.
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
   - [with Rapscallion](#with-rapscallion)
+- [FAQ](#faq)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -55,27 +65,52 @@ Readability counts.
 
 ## Guide
 
-**TODO: containing state with an HOC**
+**TODO**
 
-**TODO: accessing state from the same component via injectState**
 
-**TODO: accessing state from a child via injectState**
+### Containing state with an HOC
 
-**TODO: transforming state**
+**TODO**
 
-**TODO: transforming state asynchronously**
 
-**TODO: transforming state from a child**
+### Accessing state from a top-level component
 
-**TODO: transforming state from another effect for intermediate state**
+**TODO**
 
-**TODO: introducing compound values**
 
-- use a piece of state that we computed in the render function above and move it here
-- add a more complex piece of state
-- demonstrate how it is cached
+### Accessing state from a child component
 
-**TODO: referencing compound values from child state container**
+**TODO**
+
+
+### Transforming state
+
+**TODO**
+
+
+### Transforming state asynchronously
+
+**TODO**
+
+
+### Transforming state from a child
+
+**TODO**
+
+
+### Intermediate state
+
+**TODO**
+
+
+### Computed state values
+
+**TODO**
+
+
+### Composing multiple state containers
+
+**TODO**
 
 
 ----
@@ -163,3 +198,22 @@ Readability counts.
 
 **TODO**
 
+
+----
+
+<a href="#freactal"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
+
+----
+
+## FAQ
+
+**Do you support time-traveling?**
+
+TODO
+
+**What middleware is available?**
+
+- [freactal-devtools](https://github.com/FormidableLabs/freactal-devtools)
+- [freactal-logger](https://github.com/FormidableLabs/freactal-logger)
+
+**TODO**
