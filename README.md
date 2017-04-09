@@ -20,8 +20,8 @@ Beautiful is better than ugly.
 Readability counts.
 ```
 
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
-----
 
 ## Table of Contents
 
@@ -53,11 +53,8 @@ Readability counts.
 - [FAQ](#faq)
 
 
-----
-
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
-----
 
 ## Guide
 
@@ -109,22 +106,16 @@ Readability counts.
 **TODO**
 
 
-----
-
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
-----
 
 ## Architecture
 
 **TODO**
 
 
-----
-
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
-----
 
 ## API Documentation
 
@@ -157,11 +148,8 @@ Readability counts.
 **TODO**
 
 
-----
-
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
-----
 
 ## Helper functions
 
@@ -176,11 +164,8 @@ Readability counts.
 **TODO**
 
 
-----
-
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
-----
 
 ## Server-side Rendering
 
@@ -195,11 +180,8 @@ Readability counts.
 **TODO**
 
 
-----
-
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
-----
 
 ## FAQ
 
