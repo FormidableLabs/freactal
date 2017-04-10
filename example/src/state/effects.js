@@ -1,11 +1,8 @@
 import "isomorphic-fetch";
-
+import { hardUpdate } from "../../..";
 
 const IS_BROWSER = typeof window === "object";
 
-
-const update = newState => state => Object.assign({}, state, newState);
-const hardUpdate = newState => update(newState);
 
 const wrapWithPending = (effects, cb) =>
   effects.setDataPending(true)

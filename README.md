@@ -269,7 +269,61 @@ We could insert another component at the end, and `injectState` into the `GrandC
 
 ### `hardUpdate`
 
-**TODO**
+This handy helper provides better ergonomics when defining an effect that updates state, regardless of the previous state.
+
+It can be consumed like so:
+
+```javascript
+import { provideState, hardUpdate } from "freactal";
+const wrapComponentWithState = provideState({
+  // ...
+  effects: {
+    myEffect: hardUpdate({ setThisKey: "to this value..." })
+  }
+});
+```
+
+Which is equivalent to the following:
+
+```javascript
+import { provideState } from "freactal";
+const wrapComponentWithState = provideState({
+  // ...
+  effects: {
+    myEffect: state => Object.assign({}, state, { setThisKey: "to this value..." })
+  }
+});
+```
+
+
+### `softUpdate`
+
+`softUpdate` is provides a shorthand for updating an element of state that _is_ dependant on the previous state.
+
+It can be consumed like so:
+
+```javascript
+import { provideState, softUpdate } from "freactal";
+const wrapComponentWithState = provideState({
+  // ...
+  effects: {
+    myEffect: softUpdate(state => ({ counter: state.counter + 1 }))
+  }
+});
+```
+
+Which is equivalent to the following:
+
+```javascript
+import { provideState, softUpdate } from "freactal";
+const wrapComponentWithState = provideState({
+  // ...
+  effects: {
+    myEffect: softUpdate(state => Object.assign({}, state, { counter: state.counter + 1 }))
+  }
+});
+```
+
 
 ### `spread`
 
