@@ -88,13 +88,11 @@ export const provideState = opts => StatelessComponent => {
       );
     }
 
-    relayUpdate (changedParentKeys) {
-      Object.keys(changedParentKeys)
-        .filter(key => changedParentKeys[key])
+    relayUpdate (changedKeys) {
+      Object.keys(changedKeys)
+        .filter(key => changedKeys[key])
         .forEach(key => this.hocState.invalidateCache(key));
-      Object.assign(this.childContext, {
-        changedKeys: changedParentKeys
-      });
+      Object.assign(this.childContext, { changedKeys });
       this.subscribers.forEach(cb => cb && cb());
     }
 

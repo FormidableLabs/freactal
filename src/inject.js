@@ -6,16 +6,13 @@ import { contextTypes } from "./context";
 export const injectState = (StatelessComponent, keys = null) => {
   const auto = !keys;
 
-  let shouldUpdate = () => true;
-  if (keys) {
-    shouldUpdate = changedKeys => keys.reduce((memo, key) => memo || changedKeys[key], false);
-  } else {
-    shouldUpdate = (changedKeys, usedKeys) => usedKeys ?
+  const shouldUpdate = keys ?
+    changedKeys => keys.reduce((memo, key) => memo || changedKeys[key], false) :
+    (changedKeys, usedKeys) => usedKeys ?
       Object.keys(usedKeys)
         .filter(key => usedKeys[key])
         .reduce((memo, key) => memo || changedKeys[key], false) :
       true;
-  }
 
   class InjectStateHoc extends Component {
     constructor (...args) {
