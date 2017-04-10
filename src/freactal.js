@@ -56,6 +56,13 @@ export const provideState = opts => StatelessComponent => {
 
     componentDidMount () {
       if (this.effects.initialize) { this.effects.initialize(); }
+      this.unsubscribe = this.context.freactal ?
+        this.context.freactal.subscribe(this.relayUpdate.bind(this)) :
+        () => {};
+    }
+
+    componentWillUnmount () {
+      this.unsubscribe();
     }
 
     subscribe (onUpdate) {
@@ -79,6 +86,16 @@ export const provideState = opts => StatelessComponent => {
           changedKeys: Object.assign({}, parentContext.changedKeys, changedKeys)
         }
       );
+    }
+
+    relayUpdate (changedParentKeys) {
+      Object.keys(changedParentKeys)
+        .filter(key => changedParentKeys[key])
+        .forEach(key => this.hocState.invalidateCache(key));
+      Object.assign(this.childContext, {
+        changedKeys: changedParentKeys
+      });
+      this.subscribers.forEach(cb => cb && cb());
     }
 
     pushUpdate (changedKeys) {
