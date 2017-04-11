@@ -32,7 +32,6 @@ Readability counts.
   - [Transforming state (cont.)](#transforming-state-cont)
   - [Intermediate state](#intermediate-state)
   - [Effect arguments](#effect-arguments)
-  - [Transforming state from a child](#transforming-state-from-a-child)
   - [Computed state values](#computed-state-values)
   - [Composing multiple state containers](#composing-multiple-state-containers)
 - [Architecture](#architecture)
@@ -358,12 +357,36 @@ const wrapComponentWithState = provideState({
 
 ### Effect arguments
 
-**TODO**
+But what if you want to update state with some value that you captured from the user?  In Redux parlance: what about action payloads?
 
+If you were looking closely, you may have noticed we already did something like that already when we invoked `setPostsPending`.
 
-### Transforming state from a child
+Whether you are invoking an effect from your UI code or from another effect, you can pass arguments directly with the invokation.  Those arguments will show up after the `effects` argument in your effect definition.
 
-**TODO**
+Here's an example:
+
+```javascript
+const wrapComponentWithState = provideState({
+  initialState: () => ({ thing: "val" }),
+  effects: {
+    setThing: (effects, newVal) => state => Object.assign({}, state, { thing: newVal })
+  }
+});
+```
+
+And it could invoked from your component like so:
+
+```javascript
+const Child = injectState(({ state, effects }) => {
+  const onClick = () => effects.setThing("new val");
+  return (
+    <div>
+      { `Our "thing" value is: ${state.thing}` }
+      <button onClick={onClick}>Click here to change the thing!</button>
+    </div>
+  );
+});
+```
 
 
 ### Computed state values
