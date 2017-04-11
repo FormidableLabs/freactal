@@ -46,6 +46,7 @@ Readability counts.
   - [`hydrate`](#hydrate)
 - [Helper functions](#helper-functions)
   - [`hardUpdate`](#hardupdate)
+  - [`softUpdate`](#softupdate)
   - [`spread`](#spread)
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
