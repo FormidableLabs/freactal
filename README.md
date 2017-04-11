@@ -273,7 +273,87 @@ And, perhaps most importantly, this pattern allows for intermediate state.
 
 ### Intermediate state
 
-**TODO**
+So far, we haven't see any arguments to the first, outer-most function definition.  In simple scenarios, you might not need anything there, as has been illustrated above.
+
+But what about cases where you want state to be updated part-way through an operation?  You _could_ put all this logic in your UI code, and invoke effects from there multiple times.  But that's not ideal for a number of reasons:
+
+1. a single effect might be invoked from multiple places in your application;
+2. the code that influences how state might be transformed is now living in multiple places; and
+3. it is much harder to test.
+
+Fundamentally, the problem is that this pattern violates the principle of separation of concerns.
+
+So, what's the alternative?
+
+Well, we've already defined an effect as a function that, when invoked, will resolve to another function that transforms state.  Why couldn't we re-use this pattern to represent this "part-way" (or intermediate) state?  The answer is: nothing is stopping us!
+
+The first argument passed to an effect in the outer function is the same `effects` object that is exposed to components where state has been injected.  And these effects can be invoked in the same way.  Even more importantly, because effects always resolve to a `Promise`, we can wait for an intermediate state transition to complete before continuing with our original state transition.
+
+That might be a lot to take in, so let's look at an example:
+
+```javascript
+const wrapComponentWithState = provideState({
+  initialState: () => ({
+    posts: null,
+    postsPending: false
+  }),
+  effects: {
+    setPostsPending: softUpdate((state, postsPending) => ({ postsPending })),
+    getPosts: effects => effects.setPostsPending(true)
+      .then(() => fetch("/api/posts"))
+      .then(result => result.json())
+      .then(({ posts }) => effects.setPostsPending(false).then(() => posts))
+      .then(posts => state => Object.assign({}, state, { posts }))
+  }
+});
+```
+
+There's a lot going on there, so let's go through it piece by piece.
+
+- The initial state is set with two keys, `posts` and `postsPending`.
+  + `posts` will eventually contain an array of blog posts or something like that.
+  + `postsPending` is a flag that, when `true`, indicates that we are currently fetching the `posts`.
+- Two `effects` are defined.
+  + `setPostsPending` sets the `postsPending` flag to either `true` of `false`.
+  + `getPosts` does a number of things:
+    * It invokes `setPostsPending`, setting the pending flag to `true`.
+    * It waits for the `setPostsPending` effect to complete before continuing.
+    * It fetches some data from an API.
+    * It parses that data into JSON.
+    * It invokes `setPostsPending` with a value of `false`, and waits for it to complete.
+    * It resolves to a function that updates the `posts` state value.
+
+In the above example, `setPostsPending` has a synchronous-like behavior - it immediately resolves to a state update function.  But it could just as easily do something asynchronous, like make an AJAX call or interact with the IndexedDB API.
+
+And because all of this is just `Promise` composition, you can put together helper functions that give consistency to intermediate state updates.  Here's an example:
+
+```javascript
+const wrapWithPending = (effects, pendingKey, cb) =>
+  effects.setFlag(pendingKey, true)
+    .then(cb)
+    .then(value => effects.setFlag(pendingKey, false).then(() => value));
+```
+
+Which could be consumed like so:
+
+```javascript
+const wrapComponentWithState = provideState({
+  initialState: () => ({
+    posts: null,
+    postsPending: false
+  }),
+  effects: {
+    setFlag: softUpdate((state, key, value) => ({ [key]: value }))
+    getPosts: effects => wrapWithPending(
+      effects,
+      "postsPending",
+      () => fetch("/api/posts")
+        .then(result => result.json())
+        .then(({ posts }) => state => Object.assign({}, state, { posts }))
+    )
+  }
+});
+```
 
 
 ### Effect arguments
