@@ -291,7 +291,7 @@ import { provideState } from "freactal";
 const wrapComponentWithState = provideState({
   // ...
   effects: {
-    myEffect: state => Object.assign({}, state, { setThisKey: "to this value..." })
+    myEffect: () => state => Object.assign({}, state, { setThisKey: "to this value..." })
   }
 });
 ```
@@ -320,7 +320,7 @@ import { provideState, softUpdate } from "freactal";
 const wrapComponentWithState = provideState({
   // ...
   effects: {
-    myEffect: state => Object.assign({}, state, { counter: state.counter + 1 })
+    myEffect: () => state => Object.assign({}, state, { counter: state.counter + 1 })
   }
 });
 ```
