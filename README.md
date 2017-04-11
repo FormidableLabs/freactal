@@ -319,9 +319,27 @@ import { provideState, softUpdate } from "freactal";
 const wrapComponentWithState = provideState({
   // ...
   effects: {
-    myEffect: softUpdate(state => Object.assign({}, state, { counter: state.counter + 1 }))
+    myEffect: state => Object.assign({}, state, { counter: state.counter + 1 })
   }
 });
+```
+
+Any arguments that are passed to the invocation of your effect will also be passed to the function you provide to `softUpdate`.
+
+I.e.
+
+```javascript
+effects: {
+  updateCounterBy: (state, addVal) => Object.assign({}, state, { counter: state.counter + addVal })
+}
+```
+
+is equivalent to:
+
+```javascript
+effects: {
+  myEffect: softUpdate((state, addVal) => ({ counter: state.counter + addVal }))
+}
 ```
 
 
