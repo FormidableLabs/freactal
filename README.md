@@ -339,7 +339,7 @@ In the above example, `setPostsPending` has a synchronous-like behavior - it imm
 And because all of this is just `Promise` composition, you can put together helper functions that give consistency to intermediate state updates.  Here's an example:
 
 ```javascript
-const wrapWithPending = (effects, pendingKey, cb) =>
+const wrapWithPending = (pendingKey, cb) => effects  =>
   effects.setFlag(pendingKey, true)
     .then(cb)
     .then(value => effects.setFlag(pendingKey, false).then(() => value));
@@ -355,12 +355,9 @@ const wrapComponentWithState = provideState({
   }),
   effects: {
     setFlag: softUpdate((state, key, value) => ({ [key]: value }))
-    getPosts: effects => wrapWithPending(
-      effects,
-      "postsPending",
-      () => fetch("/api/posts")
-        .then(result => result.json())
-        .then(({ posts }) => state => Object.assign({}, state, { posts }))
+    getPosts: wrapWithPending("postsPending", () => fetch("/api/posts")
+      .then(result => result.json())
+      .then(({ posts }) => state => Object.assign({}, state, { posts }))
     )
   }
 });
@@ -376,7 +373,7 @@ But what if you want to update state with some value that you captured from the 
 
 If you were looking closely, you may have noticed we already did something like that already when we invoked `setPostsPending`.
 
-Whether you are invoking an effect from your UI code or from another effect, you can pass arguments directly with the invokation.  Those arguments will show up after the `effects` argument in your effect definition.
+Whether you are invoking an effect from your UI code or from another effect, you can pass arguments directly with the invocation.  Those arguments will show up after the `effects` argument in your effect definition.
 
 Here's an example:
 
