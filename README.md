@@ -144,6 +144,9 @@ render(<Parent />, document.getElementById("root"));
 That'll work just fine!
 
 
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
+
+
 ### Accessing state from a child component
 
 As was mentioned above, the `provideState`-wrapped component isn't really the one that provides access to state.  That's `injectState`'s job.  So what would stop you from injecting state into a child component, one that isn't containing state itself?  The answer is nothing!
@@ -183,6 +186,9 @@ Let's review what's going on here.
 5. Because `Child` is contained within the subtree where `Parent` is the root node, it has access to the `Parent` component's state.
 
 We could insert another component at the end, and `injectState` into the `GrandChild` component, and it would work the same.
+
+
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
 ### Transforming state
@@ -230,6 +236,9 @@ const Child = injectState(({ state, effects }) => (
 
 Wherever your `<Child />` is in your application, the state and effects it references will be accessible, so long as the state container is somewhere further up in the tree.
 
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
+
+
 ### Transforming state (cont.)
 
 If you've used Redux, effects are roughly comparable to an action-reducer pair, with a couple of important differences.
@@ -268,6 +277,9 @@ updatePosts: () => fetch("/api/posts")
 In other words, any action that your application might take, that ultimately _could_ result in a state change can be simply expressed as an effect.  Not only that, but this pattern also allows for effects and UI components to be tested with clean separation.
 
 And, perhaps most importantly, this pattern allows for intermediate state.
+
+
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
 ### Intermediate state
@@ -355,6 +367,9 @@ const wrapComponentWithState = provideState({
 ```
 
 
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
+
+
 ### Effect arguments
 
 But what if you want to update state with some value that you captured from the user?  In Redux parlance: what about action payloads?
@@ -389,9 +404,15 @@ const Child = injectState(({ state, effects }) => {
 ```
 
 
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
+
+
 ### Computed state values
 
 **TODO**
+
+
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
 ### Composing multiple state containers
