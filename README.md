@@ -29,9 +29,10 @@ Readability counts.
   - [Containing state](#containing-state)
   - [Accessing state from a child component](#accessing-state-from-a-child-component)
   - [Transforming state](#transforming-state)
-  - [Transforming state asynchronously](#transforming-state-asynchronously)
-  - [Transforming state from a child](#transforming-state-from-a-child)
+  - [Transforming state (cont.)](#transforming-state-cont)
   - [Intermediate state](#intermediate-state)
+  - [Effect arguments](#effect-arguments)
+  - [Transforming state from a child](#transforming-state-from-a-child)
   - [Computed state values](#computed-state-values)
   - [Composing multiple state containers](#composing-multiple-state-containers)
 - [Architecture](#architecture)
@@ -187,20 +188,100 @@ We could insert another component at the end, and `injectState` into the `GrandC
 
 ### Transforming state
 
+Alright, so we know how to setup state containers, give them an initial state, and consume that state from child components.  But all of this is not very useful if state is never updated.  That's where effects come in.
+
+Effects are the one and only way to change `freactal` state in your application.  These effects are defined as part of your state container template when calling `provideState`.  And they can be invoked from anywhere that state has been injected (with `injectState`).
+
+Let's take a look at that first part.
+
+```javascript
+const wrapComponentWithState = provideState({
+  initialState: () => ({ counter: 0 }),
+  effects: {
+    addOne: () => state => Object.assign({}, state, { counter: state.counter + 1 })
+  }
+});
+```
+
+You might be wondering why we have that extra `() =>` right before `state =>` in the `addOne` definition.  That'll be explained in the next section - for now, let's look at all the other pieces.
+
+In the above example, we've defined an effect that, when invoked, will update the `counter` in our state container by adding `1`.
+
+Since updating an element of state based on previous state (and potentially new information) is something you'll be doing often, `freactal` [provides a shorthand](#softupdate) to make this a bit more readable:
+
+```javascript
+const wrapComponentWithState = provideState({
+  initialState: () => ({ counter: 0 }),
+  effects: {
+    addOne: softUpdate(state => ({ counter: state.counter + 1 }))
+  }
+});
+```
+
+Now let's look at how you might trigger this effect:
+
+```javascript
+const Child = injectState(({ state, effects }) => (
+  <div>
+    { `Our counter is at: ${state.counter}` }
+    <button onClick={effects.addOne}>Add one</button>
+  </div>
+));
+```
+
+Wherever your `<Child />` is in your application, the state and effects it references will be accessible, so long as the state container is somewhere further up in the tree.
+
+### Transforming state (cont.)
+
+If you've used Redux, effects are roughly comparable to an action-reducer pair, with a couple of important differences.
+
+The first of those differences relates to asychronicity.  Under the hood, `freactal` relies heavily on `Promise`s to schedule state updates.  In fact, the following effects are all functionally equivalent:
+
+```javascript
+addOne: () => state => Object.assign({}, state, { counter: state.counter + 1 })
+/* vs */
+addOne: () => state => Promise.resolve(Object.assign({}, state, { counter: state.counter + 1 }))
+/* vs */
+addOne: () => state => new Promise(resolve => resolve(Object.assign({}, state, { counter: state.counter + 1 })))
+```
+
+To put it explicitly, the value you provide for each key in your `effects` object is:
+
+1. A function that takes in some arguments (we'll cover those shortly) and returns...
+2. A promise that resolves to...
+3. A function that takes in state and returns...
+4. The updated state.
+
+Step 2 can optionally be omitted, since `freactal` wraps these values in `Promise.resolve`.
+
+For most developers, this pattern is probably the least familiar of those that `freactal` relies upon.  But it allows for some powerful and expressive state transitions with basically no boilerplate.
+
+For example, any number of things can occur between the time that an effect is invoked and the time that the state is updated.  These "things" might include doing calculations, or talking to an API, or integrating with some other JS library.
+
+So, you might define the following effect:
+
+```javascript
+updatePosts: () => fetch("/api/posts")
+  .then(result => result.json())
+  .then(({ posts }) => state => Object.assign({}, state, { posts }))
+```
+
+In other words, any action that your application might take, that ultimately _could_ result in a state change can be simply expressed as an effect.  Not only that, but this pattern also allows for effects and UI components to be tested with clean separation.
+
+And, perhaps most importantly, this pattern allows for intermediate state.
+
+
+### Intermediate state
+
 **TODO**
 
 
-### Transforming state asynchronously
+### Effect arguments
 
 **TODO**
 
 
 ### Transforming state from a child
-
-**TODO**
-
-
-### Intermediate state
 
 **TODO**
 
