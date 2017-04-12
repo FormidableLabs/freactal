@@ -354,7 +354,7 @@ const wrapComponentWithState = provideState({
     postsPending: false
   }),
   effects: {
-    setFlag: softUpdate((state, key, value) => ({ [key]: value }))
+    setFlag: softUpdate((state, key, value) => ({ [key]: value })),
     getPosts: wrapWithPending("postsPending", () => fetch("/api/posts")
       .then(result => result.json())
       .then(({ posts }) => state => Object.assign({}, state, { posts }))
