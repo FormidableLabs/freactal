@@ -8,7 +8,7 @@ Like Flux and React in general, `freactal` builds on the principle of unidirecti
 
 When building an application, it can replace [`redux`](redux.js.org), [MobX](https://mobx.js.org), [`reselect`](https://github.com/reactjs/reselect), [`redux-loop`](https://github.com/redux-loop/redux-loop), [`redux-thunk`](https://github.com/gaearon/redux-thunk), [`redux-saga`](https://github.com/redux-saga/redux-saga), `[fill-in-the-blank sub-app composition technique]`, and potentially [`recompose`](https://github.com/acdlite/recompose), depending on how you're using it.
 
-It's design philosophy aligns closely with the [Zen of Python](https://www.python.org/dev/peps/pep-0020/):
+Its design philosophy aligns closely with the [Zen of Python](https://www.python.org/dev/peps/pep-0020/):
 
 ```
 Beautiful is better than ugly.
