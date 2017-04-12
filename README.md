@@ -406,7 +406,105 @@ const Child = injectState(({ state, effects }) => {
 
 ### Computed state values
 
-**TODO**
+As an application grows, it becomes increasingly important to have effective organizational tools.  This is especially true for how you store and transform data.
+
+Consider the following state container:
+
+```javascript
+const wrapComponentWithState = provideState({
+  initialState: () => ({
+    givenName: "Walter",
+    familyName: "Harriman"
+  }),
+  effects: {
+    setGivenName: softUpdate((state, val) => ({ givenName: val })),
+    setFamilyName: softUpdate((state, val) => ({ familyName: val }))
+  }
+});
+```
+
+Let's say that we're implementing a component and we want to display the user's full name.  We might write that component like this:
+
+```javascript
+const WelcomeMessage = injectState(({ state }) => {
+  const fullName = `${state.givenName} ${state.familyName}`;
+  return (
+    <div>
+      {`Hi, ${fullName}, and welcome!`}
+    </div>
+  );
+});
+```
+
+That seems like a pretty reasonable piece of code.  But, even for a small piece of data like a full name, things can get more complex as the application grows.
+
+What if we're displaying that full name in multiple components?  Should we compute it in all those places, or maybe inject state further up the tree and pass it down as a prop?  That can get messy to the point where you're passing down dozens of props.
+
+What if the user is in a non-English locale, where they may not place given names before family names?  We would have to remember to do that everywhere.
+
+And what if we want to derive another value off of the generated `fullName` value?  What about multiple derived values, derived from other derived values?  What if we're not dealing with names, but more complex data structures instead?
+
+`freactal`'s answer to this is computed values.
+
+Unless you're new to frontend programming, you've probably run into something like this before.  Vue.js has computed properties.  MobX has computed values.  Redux outsources this concern to libraries like `reselect`.  Ultimately, they all serve the same function: exposing compound values to the UI based on simple state values.
+
+Here's how you define computed values in `freactal`, throwing in some of the added complexities we mentioned:
+
+```javascript
+const wrapComponentWithState = provideState({
+  initialState: () => ({
+    givenName: "Walter",
+    familyName: "Harriman",
+    locale: "en-us"
+  }),
+  effects: {
+    setGivenName: softUpdate((state, val) => ({ givenName: val })),
+    setFamilyName: softUpdate((state, val) => ({ familyName: val }))
+  },
+  computed: {
+    fullName: ({ givenName, familyName, locale }) => startsWith(locale, "en") ?
+      `${givenName} ${familyName}` :
+      `${familyName} ${givenName}`,
+    greeting: ({ fullName, locale }) => startsWith(locale, "en") ?
+      `Hi, ${fullName}, and welcome!` :
+      `Helló ${fullName}, és szívesen!`
+  }
+});
+```
+
+_**Note:** This is not a replacement for a proper internationalization solution like `react-intl`, and is for illustration purposes only._
+
+Here we see two computed values, `fullName` and `greeting`.  They both rely on the `locale` state value, and `greeting` actually relies upon `fullName`, whereas `fullName` relies on the given and family names.
+
+How might that be consumed?
+
+```javascript
+const WelcomeMessage = injectState(({ state }) => (
+  <div>
+    {state.greeting}
+  </div>
+));
+```
+
+In another component, we might want to just use the `fullName` value:
+
+```javascript
+const Elsewhere = injectState(({ state }) => (
+  <div>
+    {`Are you sure you want to do that, ${state.fullName}?`}
+  </div>
+));
+```
+
+Hopefully you can see that this can be a powerful tool to help you keep your code organized and readable.
+
+Here are a handful of other things that will be nice for you to know.
+
+- Computed values are generated _lazily_.  This means that if the `greeting` value above is never accessed, it will never be computed.
+- Computed values are _cached_.  Once a computed value is calculated once, a second state retrieval will return the cached value.
+- Cached values are _invalidated_ when dependencies change.  If you were to trigger the `setGivenName` effect with a new name, the `fullName` and `greeting` values would be recomputed as soon as React re-rendered the UI.
+
+That's all you need to know to use computed values effectively!
 
 
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
