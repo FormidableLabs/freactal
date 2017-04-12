@@ -284,7 +284,7 @@ And, perhaps most importantly, this pattern allows for intermediate state.
 
 ### Intermediate state
 
-So far, we haven't see any arguments to the first, outer-most function definition.  In simple scenarios, you might not need anything there, as has been illustrated above.
+So far, we haven't see any arguments to the first, outer-most function in our effect definitions.  In simple scenarios, this outer-function may seem unnecessary, as in the illustration above.
 
 But what about cases where you want state to be updated part-way through an operation?  You _could_ put all this logic in your UI code, and invoke effects from there multiple times.  But that's not ideal for a number of reasons:
 
