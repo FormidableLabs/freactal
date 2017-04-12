@@ -12,11 +12,11 @@ It's design philosophy aligns closely with the [Zen of Python](https://www.pytho
 
 ```
 Beautiful is better than ugly.
-  Explicit is better than implicit.
-    Simple is better than complex.
-  Complex is better than complicated.
-    Flat is better than nested.
-  Sparse is better than dense.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
 Readability counts.
 ```
 
@@ -288,9 +288,9 @@ So far, we haven't see any arguments to the first, outer-most function in our ef
 
 But what about cases where you want state to be updated part-way through an operation?  You _could_ put all this logic in your UI code, and invoke effects from there multiple times.  But that's not ideal for a number of reasons:
 
-1. a single effect might be invoked from multiple places in your application;
-2. the code that influences how state might be transformed is now living in multiple places; and
-3. it is much harder to test.
+1. A single effect might be invoked from multiple places in your application.
+2. The code that influences how state might be transformed is now living in multiple places.
+3. It is much harder to test.
 
 Fundamentally, the problem is that this pattern violates the principle of separation of concerns.
 
@@ -325,7 +325,7 @@ There's a lot going on there, so let's go through it piece by piece.
   + `posts` will eventually contain an array of blog posts or something like that.
   + `postsPending` is a flag that, when `true`, indicates that we are currently fetching the `posts`.
 - Two `effects` are defined.
-  + `setPostsPending` sets the `postsPending` flag to either `true` of `false`.
+  + `setPostsPending` sets the `postsPending` flag to either `true` or `false`.
   + `getPosts` does a number of things:
     * It invokes `setPostsPending`, setting the pending flag to `true`.
     * It waits for the `setPostsPending` effect to complete before continuing.
@@ -371,7 +371,7 @@ const wrapComponentWithState = provideState({
 
 But what if you want to update state with some value that you captured from the user?  In Redux parlance: what about action payloads?
 
-If you were looking closely, you may have noticed we already did something like that already when we invoked `setPostsPending`.
+If you were looking closely, you may have noticed we already did something like that when we invoked `setPostsPending`.
 
 Whether you are invoking an effect from your UI code or from another effect, you can pass arguments directly with the invocation.  Those arguments will show up after the `effects` argument in your effect definition.
 
@@ -446,7 +446,7 @@ And what if we want to derive another value off of the generated `fullName` valu
 
 `freactal`'s answer to this is computed values.
 
-Unless you're new to frontend programming, you've probably run into something like this before.  Vue.js has computed properties.  MobX has computed values.  Redux outsources this concern to libraries like `reselect`.  Ultimately, they all serve the same function: exposing compound values to the UI based on simple state values.
+You've probably run into something like this before.  Vue.js has computed properties.  MobX has computed values.  Redux outsources this concern to libraries like `reselect`.  Ultimately, they all serve the same function: exposing compound values to the UI based on simple state values.
 
 Here's how you define computed values in `freactal`, throwing in some of the added complexities we mentioned:
 
