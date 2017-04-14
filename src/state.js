@@ -51,16 +51,16 @@ export class HocState {
     return stateProxy;
   }
 
-  defineComputedStateProperties (state, parentKeys) {
+  defineComputedStateProperties (stateWithComputed, parentKeys) {
     const { cachedState, getTrackedState, computed } = this;
 
     const computedKeys = Object.keys(computed);
-    const accessibleKeys = [].concat(computedKeys, Object.keys(state), parentKeys);
+    const accessibleKeys = [].concat(computedKeys, Object.keys(stateWithComputed), parentKeys);
 
     computedKeys.forEach(computedKey => {
-      const trackedState = getTrackedState(computedKey, state, accessibleKeys);
+      const trackedState = getTrackedState(computedKey, stateWithComputed, accessibleKeys);
 
-      Object.defineProperty(state, computedKey, {
+      Object.defineProperty(stateWithComputed, computedKey, {
         enumerable: true,
         get () {
           if (computedKey in cachedState) { return cachedState[computedKey]; }
@@ -71,10 +71,10 @@ export class HocState {
   }
 
   getState (parentKeys) {
-    const state = Object.create(null);
-    Object.assign(state, this.state);
-    this.defineComputedStateProperties(state, parentKeys);
-    return state;
+    const stateWithComputed = Object.create(null);
+    Object.assign(stateWithComputed, this.state);
+    this.defineComputedStateProperties(stateWithComputed, parentKeys);
+    return stateWithComputed;
   }
 
   invalidateCache (key) {
