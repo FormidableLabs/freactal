@@ -36,8 +36,8 @@ export const injectState = (StatelessComponent, keys = null) => {
       this.unsubscribe();
     }
 
-    update () {
-      if (this.mounted && shouldUpdate(this.context.freactal.changedKeys, this.usedKeys)) {
+    update (changedKeys) {
+      if (this.mounted && shouldUpdate(changedKeys, this.usedKeys)) {
         this.forceUpdate();
       }
     }

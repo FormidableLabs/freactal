@@ -41,16 +41,17 @@ export const provideState = opts => StatelessComponent => {
         parentContext.captureState(this.hocState.state);
       }
 
-      const childContext = this.childContext = this.buildContext();
+      const localContext = this.buildContext();
+      this.childContext = Object.assign({}, parentContext, localContext);
 
       // Provide context for sub-component state re-hydration.
       if (this.hocState.state[HYDRATE]) {
-        childContext.getNextContainerState = this.hocState.state[HYDRATE];
+        this.childContext.getNextContainerState = this.hocState.state[HYDRATE];
         delete this.hocState.state[HYDRATE];
       }
 
       return {
-        freactal: Object.assign({}, parentContext, childContext)
+        freactal: this.childContext
       };
     }
 
@@ -73,7 +74,7 @@ export const provideState = opts => StatelessComponent => {
       };
     }
 
-    buildContext (changedKeys) {
+    buildContext () {
       const parentContext = this.context.freactal || {};
       const parentKeys = parentContext.state ? Object.keys(parentContext.state) : [];
 
@@ -82,8 +83,7 @@ export const provideState = opts => StatelessComponent => {
         {
           state: graftParentState(this.hocState.getState(parentKeys), parentContext.state),
           effects: Object.assign({}, parentContext.effects, this.effects),
-          subscribe: this.subscribe,
-          changedKeys: Object.assign({}, parentContext.changedKeys, changedKeys)
+          subscribe: this.subscribe
         }
       );
     }
@@ -102,8 +102,9 @@ export const provideState = opts => StatelessComponent => {
         // context will not yet be generated.  The subscribers don't need to be notified,
         // as they will contain correct context on their initial render.
         if (this.childContext) {
-          Object.assign(this.childContext, this.buildContext(changedKeys));
-          this.subscribers.forEach(cb => cb && cb());
+          Object.assign(this.childContext, this.buildContext());
+          const relayedChangedKeys = this.invalidateChanged(changedKeys);
+          this.subscribers.forEach(cb => cb && cb(relayedChangedKeys));
         }
       });
     }
