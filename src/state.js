@@ -19,7 +19,7 @@ export class HocState {
   constructor (
     initialState,
     computed,
-    onChange
+    pushUpdate
   ) {
     this.state = initialState;
 
@@ -27,7 +27,7 @@ export class HocState {
     this.computedDependants = Object.create(null);
 
     this.computed = computed;
-    this.onChange = onChange;
+    this.pushUpdate = pushUpdate;
 
     this.getTrackedState = this.getTrackedState.bind(this);
   }
@@ -94,14 +94,16 @@ export class HocState {
   }
 
   setState (newState) {
-    const oldState = this.state;
-    const allKeys = Object.keys(Object.assign({}, oldState, newState));
+    const allKeys = Object.keys(Object.assign({}, this.state, newState));
     const changedKeys = Object.create(null);
+
     allKeys.forEach(key => {
+      const oldValue = this.state[key];
       this.set(key, newState[key]);
-      changedKeys[key] = oldState[key] === newState[key];
+      if (oldValue !== newState[key]) { changedKeys[key] = true; }
     });
-    return this.onChange(changedKeys);
+
+    return this.pushUpdate(changedKeys);
   }
 }
 
