@@ -53,11 +53,15 @@ const boilerplate = (componentHtml, state) => `
 
 
 app.route("/").get((req, res) => {
-  initialize(<StatefulRootComponent rootProp="hello" />).then(({ vdom, state }) => {
-    const appHtml = renderToString(vdom);
-    const html = boilerplate(appHtml, state);
-    return res.send(html).end();
-  });
+  initialize(<StatefulRootComponent rootProp="hello" />)
+    .then(({ vdom, state }) => {
+      const appHtml = renderToString(vdom);
+      const html = boilerplate(appHtml, state);
+      return res.send(html).end();
+    })
+    .catch(err => {
+      console.log(err.stack || err);
+    });
 });
 
 app.listen(PORT, () => {
