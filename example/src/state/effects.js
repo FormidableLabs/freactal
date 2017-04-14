@@ -25,4 +25,4 @@ export const initialize = effects =>
   Promise.resolve() :
   fetch("https://jsonplaceholder.typicode.com/todos")
     .then(result => result.json())
-    .then(json => update({ todos: json }));
+    .then(json => update({ todos: json.slice(0, 10) }));
