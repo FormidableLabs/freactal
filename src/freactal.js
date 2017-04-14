@@ -108,10 +108,6 @@ export const provideState = opts => StatelessComponent => {
       });
     }
 
-    getState () {
-      return this.hocState.state;
-    }
-
     render () {
       return <StatelessComponent {...this.props} />;
     }
