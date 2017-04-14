@@ -88,12 +88,25 @@ export const provideState = opts => StatelessComponent => {
       );
     }
 
-    relayUpdate (changedKeys) {
+    invalidateChanged (changedKeys) {
+      const relayedChangedKeys = Object.assign({}, changedKeys);
+
+      const markedKeyAsChanged = key => {
+        relayedChangedKeys[key] = true;
+        this.hocState.invalidateCache(key);
+        Object.keys(this.hocState.computedDependants[key] || {}).forEach(markedKeyAsChanged);
+      };
+
       Object.keys(changedKeys)
         .filter(key => changedKeys[key])
-        .forEach(key => this.hocState.invalidateCache(key));
-      Object.assign(this.childContext, { changedKeys });
-      this.subscribers.forEach(cb => cb && cb());
+        .forEach(key => markedKeyAsChanged(key));
+
+      return relayedChangedKeys;
+    }
+
+    relayUpdate (changedKeys) {
+      const relayedChangedKeys = this.invalidateChanged(changedKeys);
+      this.subscribers.forEach(cb => cb && cb(relayedChangedKeys));
     }
 
     pushUpdate (changedKeys) {
