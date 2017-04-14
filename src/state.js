@@ -32,16 +32,18 @@ export class HocState {
     this.getTrackedState = this.getTrackedState.bind(this);
   }
 
-  getTrackedState (computedKey, stateObj, accessibleKeys) {
-    const { computedDependants } = this;
+  getTrackedState (computedKey, stateWithComputed, accessibleKeys) {
+    const { computedDependants, state } = this;
     const stateProxy = Object.create(null);
 
-    accessibleKeys.forEach(stateKey => {
-      Object.defineProperty(stateProxy, stateKey, {
+    accessibleKeys.forEach(key => {
+      Object.defineProperty(stateProxy, key, {
         get () {
-          computedDependants[stateKey] = computedDependants[stateKey] || Object.create(null);
-          computedDependants[stateKey][computedKey] = true;
-          return stateObj[stateKey];
+          computedDependants[key] = computedDependants[key] || Object.create(null);
+          computedDependants[key][computedKey] = true;
+          return key in state ?
+            state[key] :
+            stateWithComputed[key];
         }
       });
     });
