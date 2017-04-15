@@ -34,6 +34,7 @@ Readability counts.
   - [Effect arguments](#effect-arguments)
   - [Computed state values](#computed-state-values)
   - [Composing multiple state containers](#composing-multiple-state-containers)
+  - [Conclusion](#conclusion)
 - [Architecture](#architecture)
 - [API Documentation](#api-documentation)
   - [`provideState`](#providestate)
@@ -512,7 +513,110 @@ That's all you need to know to use computed values effectively!
 
 ### Composing multiple state containers
 
-**TODO**
+We started this guide by noting that, while most React state libraries contain state in a single place, `freactal` approaches things differently.
+
+Before we dive into how that works, let's briefly consider some of the issues that arise with the centralized approach to state management:
+
+- Oftentimes, it is hard to know how to organize state-related code.  Definitions for events or actions live separately from the UI that triggers them, which lives separately from functions that reduce those events into state, which also live separately from code that transforms state into more complex values.
+- While React components are re-usable ([see](http://www.material-ui.com/) [component](http://elemental-ui.com/) [libraries](https://github.com/brillout/awesome-react-components)), complex stateful components are a hard nut to crack.  There's this fuzzy line when addressing complexity in your own code that, when crossed, means you should be using a state library vs React's own `setState`.  But how do you make that work DRY across applications and team boundaries?
+- Sometimes you might want to compose full PWAs together in various ways.  But if they need to interact on the page or share state in some way, how do you go about accomplishing this?  The results here are almost universally ad-hoc.
+- It is an often arduous process when it comes time to refactor your application and move state-dependant components into different parts of your application.  Wiring everything up can be tedious as hell.
+
+These are constraints that `freactal` aims to address.  Let's take a look at a minimal example:
+
+```javascript
+const Child = injectState(({ state }) => (
+  <div>
+    This is the GrandChild.
+    {state.fromParent}
+    {state.fromGrandParent}
+  </div>
+));
+
+const Parent = provideState({
+  initialState: () => ({ fromParent: "ParentValue" })
+})(() => (
+  <div>
+    This is the Child.
+    <GrandChild />
+  </div>
+));
+
+const GrandParent = provideState({
+  initialState: () => ({ fromGrandParent: "GrandParentValue" })
+})(() => (
+  <div>
+    This is the Parent.
+    <Child />
+  </div>
+));
+```
+
+Its important to notice here that `Child` was able to access state values from both its `Parent` and its `GrandParent`.  All state keys will be accessible from the `Child`, unless there is a key conflict between `Parent` and `GrandParent` (in which case `Parent` "wins").
+
+This pattern allows you to co-locate your code by feature, rather than by function.  In other words, if you're out a new feature for your application, all of that new code - UI, state, effects, etc - can go in one place, rather than scattered across your code-base.
+
+Because of this, refactoring becomes easier.  Want to move a component to a different part of your application?  Just move the directory and update the import from the parents.  What if this component accesses parent state?  If that parent is still an anscestor, you don't have to change a thing.  If it's not, moving that state to a more appropriate place should be part of the refactor anyway.
+
+But one word of warning: accessing parent state can be powerful, and very useful, but it also necessarily couples the child state to the parent state.  While the coupling is a "loose" coupling, it still may introduce complexity that should be carefully thought-out.
+
+One more thing.
+
+Child effects can also trigger parent effects.  Let's say your UX team has indicated that, whenever an API call is in flight, a global spinner should be shown.  But maybe the data is only needed in certain parts of the application.  In this scenario, you could define `beginApiCall` and `completeApiCall` effects that track how many API calls are active.  If above `0`, you show a spinner.  These effects can be accessed by call-specific effects further down in the state hierarchy, like so:
+
+```javascript
+const Child = injectState(({ state, effects }) => (
+  <div>
+    This is the GrandChild.
+    {state.fromParent}
+    {state.fromGrandParent}
+    <button
+      onClick={() => effects.changeBothStates("newValue")}
+    >
+      Click me!
+    </button>
+  </div>
+));
+
+const Parent = provideState({
+  initialState: () => ({ fromParent: "ParentValue" }),
+  effects: {
+    changeParentState: (effects, fromParent) => state =>
+      Object.assign({}, state, { fromParent }),
+    changeBothStates: (effects, value) =>
+      effects.changeGrandParentState(value).then(state =>
+        Object.assign({}, state, { fromParent: value })
+      )
+  }
+})(() => (
+  <div>
+    This is the Child.
+    <GrandChild />
+  </div>
+));
+
+const GrandParent = provideState({
+  initialState: () => ({ fromGrandParent: "GrandParentValue" }),
+  effects: {
+    changeGrandParentState: (effects, fromGrandParent) => state =>
+      Object.assign({}, state, { fromGrandParent })
+  }
+})(() => (
+  <div>
+    This is the Parent.
+    <Child />
+  </div>
+));
+```
+
+
+### Conclusion
+
+We hope that you found this guide to be helpful!
+
+If you find that a piece is missing that would've helped you understand `freactal`, please feel free to [open an issue](https://github.com/FormidableLabs/freactal/issues/new).  For help working through a problem, [reach out on Twitter](twitter.com/divmain), open an issue, or ping us on [Gitter](https://gitter.im/FormidableLabs/rapscallion).
+
+You can also read through the API docs below!
 
 
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
