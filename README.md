@@ -614,7 +614,7 @@ const GrandParent = provideState({
 
 We hope that you found this guide to be helpful!
 
-If you find that a piece is missing that would've helped you understand `freactal`, please feel free to [open an issue](https://github.com/FormidableLabs/freactal/issues/new).  For help working through a problem, [reach out on Twitter](twitter.com/divmain), open an issue, or ping us on [Gitter](https://gitter.im/FormidableLabs/rapscallion).
+If you find that a piece is missing that would've helped you understand `freactal`, please feel free to [open an issue](https://github.com/FormidableLabs/freactal/issues/new).  For help working through a problem, [reach out on Twitter](http://twitter.com/divmain), open an issue, or ping us on [Gitter](https://gitter.im/FormidableLabs/rapscallion).
 
 You can also read through the API docs below!
 
