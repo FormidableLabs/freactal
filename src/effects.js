@@ -1,4 +1,4 @@
-export const getEffects = (hocState, effectDefs) => {
+export const getEffects = (hocState, effectDefs, parentEffects) => {
   const applyReducer = reducer => reducer ?
     hocState.setState(reducer(hocState.state)) :
     null;
@@ -11,7 +11,7 @@ export const getEffects = (hocState, effectDefs) => {
       .then(applyReducer);
 
     return memo;
-  }, Object.create(null));
+  }, Object.assign({}, parentEffects));
 
   return effects;
 };

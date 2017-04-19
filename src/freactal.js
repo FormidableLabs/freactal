@@ -24,7 +24,8 @@ export const provideState = opts => StatelessComponent => {
         this.pushUpdate.bind(this)
       );
 
-      this.effects = getEffects(this.hocState, effects);
+      const parentContext = this.context.freactal || {};
+      this.effects = getEffects(this.hocState, effects, parentContext.effects);
 
       this.computed = computed;
 
@@ -82,7 +83,7 @@ export const provideState = opts => StatelessComponent => {
         (memo, middlewareFn) => middlewareFn(memo),
         {
           state: graftParentState(this.hocState.getState(parentKeys), parentContext.state),
-          effects: Object.assign({}, parentContext.effects, this.effects),
+          effects: this.effects,
           subscribe: this.subscribe
         }
       );

@@ -31,4 +31,30 @@ describe("effects", () => {
 
     return effects.effectA();
   });
+
+  it("can access their parent effects", () => {
+    const parentHocState = {
+      setState: sinon.spy(),
+      state: {}
+    };
+    const parentEffects = getEffects(parentHocState, {
+      parentEffect: (effects, parentVal) => () => ({ parentVal })
+    });
+
+    const childHocState = {
+      setState: sinon.spy(),
+      state: {}
+    };
+    const childEffects = getEffects(childHocState, {
+      childEffect: (effects, parentVal, childVal) => effects.parentEffect(parentVal)
+        .then(() => () => ({ childVal }))
+    }, parentEffects);
+
+    return childEffects.childEffect("parent", "child").then(() => {
+      expect(parentHocState.setState).to.have.been.calledOnce;
+      expect(parentHocState.setState).to.have.been.calledWith({ parentVal: "parent" });
+      expect(childHocState.setState).to.have.been.calledOnce;
+      expect(childHocState.setState).to.have.been.calledWith({ childVal: "child" });
+    });
+  });
 });
