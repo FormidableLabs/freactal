@@ -30,3 +30,5 @@ rules:
   react/no-multi-comp: off
 
   no-unused-expressions: off
+
+  import/no-unresolved: off
