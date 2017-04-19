@@ -8,7 +8,7 @@
     "build-lib": "babel -d lib/ src/",
     "watch": "nodemon --watch ./src --exec npm run build-lib",
     "check": "npm run lint && npm run test",
-    "test": "mocha spec/exec.js",
+    "test": "mocha spec/",
     "lint": "eslint src spec",
     "preversion": "npm run build",
     "postversion": "npm publish && git push origin --tags"
