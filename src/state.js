@@ -14,7 +14,7 @@ export const graftParentState = (state, parentState) => {
   return state;
 };
 
-export class HocState {
+export class StateContainer {
   // eslint-disable-next-line max-params
   constructor (
     initialState,

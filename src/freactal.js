@@ -1,6 +1,6 @@
 import { default as React, Component } from "react";
 
-import { HocState, graftParentState } from "./state";
+import { StateContainer, graftParentState } from "./state";
 import { getEffects } from "./effects";
 import { contextTypes } from "./context";
 import { HYDRATE } from "./common";
@@ -18,14 +18,14 @@ export const provideState = opts => StatelessComponent => {
     constructor (...args) {
       super(...args);
 
-      this.hocState = new HocState(
+      this.stateContainer = new StateContainer(
         initialState && initialState(this.props, this.context) || Object.create(null),
         computed,
         this.pushUpdate.bind(this)
       );
 
       const parentContext = this.context.freactal || {};
-      this.effects = getEffects(this.hocState, effects, parentContext.effects);
+      this.effects = getEffects(this.stateContainer, effects, parentContext.effects);
 
       this.computed = computed;
 
@@ -39,16 +39,16 @@ export const provideState = opts => StatelessComponent => {
 
       // Capture container state while server-side rendering.
       if (parentContext.captureState) {
-        parentContext.captureState(this.hocState.state);
+        parentContext.captureState(this.stateContainer.state);
       }
 
       const localContext = this.buildContext();
       this.childContext = Object.assign({}, parentContext, localContext);
 
       // Provide context for sub-component state re-hydration.
-      if (this.hocState.state[HYDRATE]) {
-        this.childContext.getNextContainerState = this.hocState.state[HYDRATE];
-        delete this.hocState.state[HYDRATE];
+      if (this.stateContainer.state[HYDRATE]) {
+        this.childContext.getNextStateContainer = this.stateContainer.state[HYDRATE];
+        delete this.stateContainer.state[HYDRATE];
       }
 
       return {
@@ -82,7 +82,7 @@ export const provideState = opts => StatelessComponent => {
       return middleware.reduce(
         (memo, middlewareFn) => middlewareFn(memo),
         {
-          state: graftParentState(this.hocState.getState(parentKeys), parentContext.state),
+          state: graftParentState(this.stateContainer.getState(parentKeys), parentContext.state),
           effects: this.effects,
           subscribe: this.subscribe
         }
@@ -94,8 +94,8 @@ export const provideState = opts => StatelessComponent => {
 
       const markedKeyAsChanged = key => {
         relayedChangedKeys[key] = true;
-        this.hocState.invalidateCache(key);
-        Object.keys(this.hocState.computedDependants[key] || {}).forEach(markedKeyAsChanged);
+        this.stateContainer.invalidateCache(key);
+        Object.keys(this.stateContainer.computedDependants[key] || {}).forEach(markedKeyAsChanged);
       };
 
       Object.keys(changedKeys)
