@@ -111,6 +111,10 @@ export const provideState = opts => StatelessComponent => {
     }
 
     pushUpdate (changedKeys) {
+      if (Object.keys(changedKeys).length === 0) {
+        return Promise.resolve();
+      }
+
       return Promise.resolve().then(() => {
         // In an SSR environment, the component will not yet have rendered, and the child
         // context will not yet be generated.  The subscribers don't need to be notified,
