@@ -1,4 +1,4 @@
-export { provideState } from "./freactal";
+export { provideState } from "./provide";
 export { hydrate } from "./state";
 export { injectState } from "./inject";
 export {

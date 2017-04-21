@@ -47,7 +47,7 @@ export const provideState = opts => StatelessComponent => {
 
       // Provide context for sub-component state re-hydration.
       if (this.stateContainer.state[HYDRATE]) {
-        this.childContext.getNextStateContainer = this.stateContainer.state[HYDRATE];
+        this.childContext.getNextContainerState = this.stateContainer.state[HYDRATE];
         delete this.stateContainer.state[HYDRATE];
       }
 
