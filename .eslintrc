@@ -6,6 +6,7 @@ globals:
   sinon: true
   expect: true
   global: true
+  sandbox: true
 
 rules:
   arrow-parens: off
