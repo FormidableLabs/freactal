@@ -67,13 +67,15 @@ export class BaseStatefulComponent extends Component {
 
     const markedKeyAsChanged = key => {
       relayedChangedKeys[key] = true;
-      this.stateContainer.invalidateCache(key);
       Object.keys(this.stateContainer.computedDependants[key] || {}).forEach(markedKeyAsChanged);
     };
 
     Object.keys(changedKeys)
       .filter(key => changedKeys[key])
-      .forEach(key => markedKeyAsChanged(key));
+      .forEach(key => {
+        this.stateContainer.invalidateCache(key);
+        markedKeyAsChanged(key);
+      });
 
     return relayedChangedKeys;
   }
