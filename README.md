@@ -634,31 +634,136 @@ You can also read through the API docs below!
 
 ### `provideState`
 
-**TODO**
+This is used to define a state container, which in turn can wrap one of your application components.
+
+```javascript
+const StatefulComponent = provideState({/* options */})(StatelessComponent);
+```
+
+The `options` argument is an object with one or more of the following keys: `initialState`, `effects`, `initialize`, and `computed`.
+
 
 #### `initialState`
 
-**TODO**
+A function defining the state of your state container when it is first initialized.
+
+This function is invoked both on the server during a server-side render and on the client.  However, you might employ environment detection in order to yield divergent results.
+
+```javascript
+provideState({
+  initialState: () => ({
+    a: "value will",
+    b: "set here"
+  })
+})
+```
+
 
 #### `effects`
 
-**TODO**
+Effects are the mechanism by which state is updated.
+
+The `effects` value should be an object, where the keys are function names (that you will later) and the values are functions.
+
+Each effect will be provided one or more arguments: an `effects` reference (see note below), and any arguments that are passed to the function when they're invoked in application code.
+
+The return value is either 1) a function that takes in old state and returns new state or, 2) a Promise that resolves to #1.
+
+This may seem opaque, so please refer to the [guide](#effect-arguments) for information on how to use them effectively.
+
+```javascript
+provideState({
+  effects: {
+    doThing: (effects, argA) =>
+      Promise.resolve(state => Object.assign({}, state, { val: argA }))
+  }
+});
+```
+
+**NOTE:** IThe `effects` object that is passed to each effect is _not_ the same as the outer effects object that you define here.  Instead, that object is a composition of the hierarchy of stateful effects.
+
 
 ##### `initialize`
 
-**TODO**
+Each state container can define a special effect called `initialize`.  This effect will be implicitly invoked in two circumstances:
+
+1. During SSR, each state container with an `initialize` effect will invoke it, and the rendering process will wait the resolution of that effect before continuing with rendering.
+2. When running in the browser, each state container with an `initialize` effect wil invoke it when the container is mounted into the DOM.
+
 
 #### `computed`
 
-**TODO**
+The `computed` object allows you to define compound state values that depend on basic state values or other computed values.
+
+The value provided as the `computed` option should be an object where each key is the name by which the computed value will be referenced, and each value is a function taking in state and returning a computed value.
+
+```javascript
+provideState({
+  initialState: () => ({
+    a: "value will",
+    b: "set here"
+  }),
+  computed: {
+    aPlusB: ({ a, b }) => `${a} + ${b}`, // "value will + set here"
+    typeOfAPlusB: ({ aPlusB }) => typeof aPlusB // "string"
+  }
+})
+```
 
 #### `middleware`
 
-**TODO**
+Middleware is defined per state container, not globally.  Each middleware function will be invoked in the order provided whenever a state change has occurred.
+
+With middleware, you should be able to inject new state values, intercept effects before they begin, track when effects complete, and modify the way in which sub-components interact and respond to state containers further up the tree.
+
+To write middleware effectively, you'll probably want to take a look at the Freactal's internal `buildContext` method.  Fortunately it is pretty straightforward.
+
+The following is an example that will log out whenever an effect is invoked, the arguments it was provided, and when the effect completed:
+
+```javascript
+provideState({
+  middleware: [
+    freactalCxt => Object.assign({}, freactalCxt, {
+      effects: Object.keys(freactalCxt.effects).reduce((memo, key) => {
+        memo[key] = (...args) => {
+          console.log("Effect started", key, args);
+          return freactalCxt.effects[key](...args).then(result => {
+            console.log("Effect completed", key);
+            return result;
+          })
+        };
+        return memo;
+      }, {})
+    })
+  ]
+})
+```
+
 
 ### `injectState`
 
-**TODO**
+While `provideState` supplies the means by which you declare your state and its possible transitions, `injectState` is the means by which you access `state` and `effects` from your UI code.
+
+By default, `injectState` will detect the keys that you access in your component, and will only force a re-render if those keys change in the upstream state container.
+
+```javascript
+const StatelessComponent = ({ state: { myValue } }) =>
+  <div>{ myValue }</div>
+const WithState = injectState(StatelessComponent);
+```
+
+In the above example, `StatelessComponent` would only be re-rendered a second time if `myValue` changed in the upstream state container.
+
+However, it is possible to explicitly define which keys you want to "listen" to.
+
+```javascript
+const StatelessComponent = ({ state: { myValue } }) =>
+  <div>{ myValue }</div>
+const WithState = injectState(StatelessComponent, ["myValue", "otherValueToo"]);
+```
+
+In this example, `StatelessComponent` would re-render when `myValue` changed, but it would also re-render when `otherValueToo` changed, even though that value is not used in the component.
+
 
 ### `hydrate`
 
@@ -670,7 +775,8 @@ You can also read through the API docs below!
 
 ## Helper functions
 
-**TODO**
+You may find the following functions handy, as a shorthand for common tasks.
+
 
 ### `hardUpdate`
 
@@ -776,7 +882,7 @@ effects: {
 
 **Do you support time-traveling?**
 
-TODO
+**TODO**
 
 **What middleware is available?**
 
