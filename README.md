@@ -519,7 +519,7 @@ Before we dive into how that works, let's briefly consider some of the issues th
 
 - Oftentimes, it is hard to know how to organize state-related code.  Definitions for events or actions live separately from the UI that triggers them, which lives separately from functions that reduce those events into state, which also live separately from code that transforms state into more complex values.
 - While React components are re-usable ([see](http://www.material-ui.com/) [component](http://elemental-ui.com/) [libraries](https://github.com/brillout/awesome-react-components)), complex stateful components are a hard nut to crack.  There's this fuzzy line when addressing complexity in your own code that, when crossed, means you should be using a state library vs React's own `setState`.  But how do you make that work DRY across applications and team boundaries?
-- Sometimes you might want to compose full PWAs together in various ways, but if they need to interact on the page or share state in some way, how do you go about accomplishing this?  The results here are almost universally ad-hoc.
+- Sometimes you might want to compose full SPAs together in various ways, but if they need to interact on the page or share state in some way, how do you go about accomplishing this?  The results here are almost universally ad-hoc.
 - It is an often arduous process when it comes time to refactor your application and move state-dependant components into different parts of your application.  Wiring everything up can be tedious as hell.
 
 These are constraints that `freactal` aims to address.  Let's take a look at a minimal example:
