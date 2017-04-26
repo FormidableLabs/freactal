@@ -2,7 +2,7 @@
 
 `freactal` is a composable state management library for React.
 
-The library grew from the idea that state should be just as flexible as your React code; the state containers you build with `freactal` are just components, and you can compose them however you'd like.  In this way, it attempts to address the often exponential relationship between application size and complexity as projects grow.
+The library grew from the idea that state should be just as flexible as your React code; the state containers you build with `freactal` are just components, and you can compose them however you'd like.  In this way, it attempts to address the often exponential relationship between application size and complexity in growing projects.
 
 Like Flux and React in general, `freactal` builds on the principle of unidirectional flow of data.  However, it does so in a way that feels idiomatic to ES2015+ and doesn't get in your way.
 
@@ -120,7 +120,7 @@ It may not be readily apparent to you why `injectState` is necessary, so let's m
 
 But that only _tracks_ state.  It doesn't make that state accessible to the developer.  That's what `injectState` is for.
 
-In early versions of `freactal`, the state was directly accessible to the component that `provideState` wrapped.  However, that meant that whenever a state change occurred, the entire tree would need to re-render.  `injectState` intelligently tracks which pieces of state that you actually access, and a re-render only occurs when _those_ pieces of state undergo a change.
+In early versions of `freactal`, the state was directly accessible to the component that `provideState` wrapped.  However, that meant that whenever a state change occurred, the entire tree would need to re-render.  `injectState` intelligently tracks the pieces of state that you actually access, and a re-render only occurs when _those_ pieces of state undergo a change.
 
 Alright, so let's finalize our example with all the pieces in play.
 
@@ -150,7 +150,7 @@ That'll work just fine!
 
 ### Accessing state from a child component
 
-As was mentioned above, the `provideState`-wrapped component isn't really the one that provides access to state.  That's `injectState`'s job.  So what would stop you from injecting state into a child component, one that isn't containing state itself?  The answer is nothing!
+As was mentioned above, the `provideState`-wrapped component isn't really the one that provides access to state.  That's `injectState`'s job.  So what would stop you from injecting state into a child component that isn't containing state itself?  The answer is nothing!
 
 Let's modify the example so that we're injecting state into a child component.
 
@@ -196,7 +196,7 @@ We could insert another component at the end, and `injectState` into the `GrandC
 
 Alright, so we know how to setup state containers, give them an initial state, and consume that state from child components.  But all of this is not very useful if state is never updated.  That's where effects come in.
 
-Effects are the one and only way to change `freactal` state in your application.  These effects are defined as part of your state container template when calling `provideState`.  And they can be invoked from anywhere that state has been injected (with `injectState`).
+Effects are the one and only way to change `freactal` state in your application.  These effects are defined as part of your state container template when calling `provideState`, and they can be invoked from anywhere that state has been injected (with `injectState`).
 
 Let's take a look at that first part.
 
@@ -519,7 +519,7 @@ Before we dive into how that works, let's briefly consider some of the issues th
 
 - Oftentimes, it is hard to know how to organize state-related code.  Definitions for events or actions live separately from the UI that triggers them, which lives separately from functions that reduce those events into state, which also live separately from code that transforms state into more complex values.
 - While React components are re-usable ([see](http://www.material-ui.com/) [component](http://elemental-ui.com/) [libraries](https://github.com/brillout/awesome-react-components)), complex stateful components are a hard nut to crack.  There's this fuzzy line when addressing complexity in your own code that, when crossed, means you should be using a state library vs React's own `setState`.  But how do you make that work DRY across applications and team boundaries?
-- Sometimes you might want to compose full PWAs together in various ways.  But if they need to interact on the page or share state in some way, how do you go about accomplishing this?  The results here are almost universally ad-hoc.
+- Sometimes you might want to compose full PWAs together in various ways, but if they need to interact on the page or share state in some way, how do you go about accomplishing this?  The results here are almost universally ad-hoc.
 - It is an often arduous process when it comes time to refactor your application and move state-dependant components into different parts of your application.  Wiring everything up can be tedious as hell.
 
 These are constraints that `freactal` aims to address.  Let's take a look at a minimal example:
@@ -554,7 +554,7 @@ const GrandParent = provideState({
 
 Its important to notice here that `Child` was able to access state values from both its `Parent` and its `GrandParent`.  All state keys will be accessible from the `Child`, unless there is a key conflict between `Parent` and `GrandParent` (in which case `Parent` "wins").
 
-This pattern allows you to co-locate your code by feature, rather than by function.  In other words, if you're out a new feature for your application, all of that new code - UI, state, effects, etc - can go in one place, rather than scattered across your code-base.
+This pattern allows you to co-locate your code by feature, rather than by function.  In other words, if you're rolling out a new feature for your application, all of that new code - UI, state, effects, etc - can go in one place, rather than scattered across your code-base.
 
 Because of this, refactoring becomes easier.  Want to move a component to a different part of your application?  Just move the directory and update the import from the parents.  What if this component accesses parent state?  If that parent is still an anscestor, you don't have to change a thing.  If it's not, moving that state to a more appropriate place should be part of the refactor anyway.
 
