@@ -723,7 +723,8 @@ describe("my app", () => {
   });
 
   it("accepts changes to the given name", () => {
-    // Next we're testing effects, so we need to be ready to 
+    // Next we're testing the conditions under which our component might
+    // interact with the provided effects.
     const effects = {
       setGivenName: sinon.spy(),
       setFamilyName: sinon.spy()
@@ -732,7 +733,7 @@ describe("my app", () => {
     const el = mount(<App state={state} effects={effects}>);
 
     // Using `sinon-chai`, we can make readable assertions about whether
-    // a spy function has been called.  We don't expect our callback to
+    // a spy function has been called.  We don't expect our effect to
     // be invoked when the component mounts, so let's make that assertion
     // here.
     expect(effects.setGivenName).not.to.have.been.called;
@@ -740,19 +741,20 @@ describe("my app", () => {
     el.find("input.given").simulate("change", {
       target: { value: "Eric" }
     });
-    // And finally, we can assert that the "effect" (or the spy stand-in)
-    // was invoked with the expected value.
+    // And finally, we can assert that the effect - or, rather, the Sinon
+    // spy that is standing in for the effect - was invoked with the expected
+    // value.
     expect(effects.setGivenName).to.have.been.calledWith("Eric");
   });
 });
 ```
 
-That takes care of your SFCs.  This should really be no different than how you might have been testing your presentational components in the past, except that this is the _only_ sort of testing you need to do for your React components.
+That takes care of your SFCs.  This should really be no different than how you might have been testing your presentational components in the past, except that with `freactal`, this is the _only_ sort of testing you need to do for your React components.
 
 
 ### State and effects
 
-Next up is state.  As you read through the example below, take note that that we can make assertions about the initial state and any expected transformations to that state without involving a React component or rendering to the DOM.
+Next up is state.  As you read through the example below, take note that we can make assertions about the initial state and any expected transformations to that state without involving a React component or rendering to the DOM.
 
 ```javascript
 /*** state.spec.js ***/
@@ -771,7 +773,7 @@ describe("state container", () => {
 
     // Since effects return a Promise, we're going to make it easy
     // on ourselves and wrap all of our assertions from this point on
-    // inside a Promise context.
+    // inside a Promise.
     return Promise.resolve()
       // When a Promise is provided as the return value to a Promise's
       // `.then` callback, the outer Promise awaits the inner before
