@@ -34,6 +34,9 @@ Readability counts.
   - [Effect arguments](#effect-arguments)
   - [Computed state values](#computed-state-values)
   - [Composing multiple state containers](#composing-multiple-state-containers)
+  - [Testing](#testing)
+    - [Stateless functional components](#stateless-functional-components)
+    - [State and effects](#state-and-effects)
   - [Conclusion](#conclusion)
 - [Architecture](#architecture)
 - [API Documentation](#api-documentation)
@@ -608,6 +611,190 @@ const GrandParent = provideState({
   </div>
 ));
 ```
+
+
+## Testing
+
+Before wrapping up, let's take a look at one additional benefit that `freactal` brings to the table: the ease of test-writing.
+
+If you hadn't noticed already, all of the examples we've looked at in this guide have relied upon [stateless functional components](https://hackernoon.com/react-stateless-functional-components-nine-wins-you-might-have-overlooked-997b0d933dbc).  This is no coincidence - from the beginning, a primary goal of `freactal` was to encapsulate _all_ state in `freactal` state containers.  That means you shouldn't need to use React's `setState` at all.
+
+**Here's the bottom line:** because _all_ state can be contained within `freactal` state containers, the rest of your application components can be ["dumb components"](https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0).
+
+This approach allows you to test your state and your components completely independent from one another.
+
+Let's take a look at a simplified example from above, and then dive into how you might test this application.  For the purposes of this example, I assume you're using Mocha, Chai, Sinon, sinon-chai, and Enzyme.
+
+First, our application code:
+
+```javascript
+/*** app.js ***/
+
+import { injectState } from "freactal";
+import { wrapComponentWithState } from "./state";
+
+
+export const App = ({ state, effects }) => {
+  const { givenName, familyName, fullName, greeting } = state;
+  const { setGivenName, setFamilyName } = effects;
+
+  const onChangeGiven = ev => setGivenName(ev.target.value);
+  const onChangeFamily = ev => setFamilyName(ev.target.value);
+
+  return (
+    <div>
+      <div id="greeting">
+        { greeting }
+      </div>
+      <div>
+        <label for="given">Enter your given name</label>
+        <input id="given" onChange={onChangeGiven} value={givenName}/>
+        <label for="family">Enter your family name</label>
+        <input id="family" onChange={onChangeFamily} value={familyName}/>
+      </div>
+    </div>
+  );
+};
+
+/* Notice that we're exporting both the unwrapped and the state-wrapped component... */
+export default wrapComponentWithState(App);
+```
+
+And then our state template:
+
+```javascript
+/*** state.js ***/
+
+import { provideState } from "freactal";
+
+export const wrapComponentWithState = provideState({
+  initialState: () => ({
+    givenName: "Walter",
+    familyName: "Harriman"
+  }),
+  effects: {
+    setGivenName: softUpdate((state, val) => ({ givenName: val })),
+    setFamilyName: softUpdate((state, val) => ({ familyName: val }))
+  },
+  computed: {
+    fullName: ({ givenName, familyName }) => `${givenName} ${familyName}`,
+    greeting: ({ fullName }) => `Hi, ${fullName}, and welcome!`
+  }
+});
+```
+
+Next, let's add a few tests!
+
+
+### Stateless functional components
+
+Remember, our goal here is to test state and UI in isolation.  Read through the following example to see how you might make assertions about 1) data-driven UI content, and 2) the ways in which your UI might trigger an effect.
+
+```javascript
+/*** app.spec.js ***/
+
+import { mount } from "enzyme";
+// Make sure to import the _unwrapped_ component here!
+import { App } from "./app";
+
+
+// We'll be re-using these values, so let's put it here for convenience.
+const state = {
+  givenName: "Charlie",
+  familyName: "In-the-box",
+  fullName: "Charlie In-the-box",
+  greeting: "Howdy there, kid!"
+};
+
+describe("my app", () => {
+  it("displays a greeting to the user", () => {
+    // This test should be easy - all we have to do is ensure that
+    // the string that is passed in is displayed correctly!
+
+    // We're not doing anything with effects here, so let's not bother
+    // setting them for now...
+    const effects = {};
+
+    // First, we mount the component, providing the expected state and effects.
+    const el = mount(<App state={state} effects={effects}>);
+
+    // And then we can make assertions on the output.
+    expect(el.find(".greeting").text()).to.equal("Howdy there, kid!");
+  });
+
+  it("accepts changes to the given name", () => {
+    // Next we're testing effects, so we need to be ready to 
+    const effects = {
+      setGivenName: sinon.spy(),
+      setFamilyName: sinon.spy()
+    };
+
+    const el = mount(<App state={state} effects={effects}>);
+
+    // Using `sinon-chai`, we can make readable assertions about whether
+    // a spy function has been called.  We don't expect our callback to
+    // be invoked when the component mounts, so let's make that assertion
+    // here.
+    expect(effects.setGivenName).not.to.have.been.called;
+    // Next, we can simulate a input-box value change.
+    el.find("input.given").simulate("change", {
+      target: { value: "Eric" }
+    });
+    // And finally, we can assert that the "effect" (or the spy stand-in)
+    // was invoked with the expected value.
+    expect(effects.setGivenName).to.have.been.calledWith("Eric");
+  });
+});
+```
+
+That takes care of your SFCs.  This should really be no different than how you might have been testing your presentational components in the past, except that this is the _only_ sort of testing you need to do for your React components.
+
+
+### State and effects
+
+Next up is state.  As you read through the example below, take note that that we can make assertions about the initial state and any expected transformations to that state without involving a React component or rendering to the DOM.
+
+```javascript
+/*** state.spec.js ***/
+
+import { wrapComponentWithState } from "./state";
+
+describe("state container", () => {
+  it("supports fullName", () => {
+    // Normally, you'd pass a component as the first argument to your
+    // state template.  However, so long as you don't try to render the
+    // thing, you can get by without doing so, which makes testing your
+    // state container that much easier.
+    const { effects, stateContainer: { getState } } = wrapComponentWithState();
+
+    expect(getState().fullName).to.equal("Walter Harriman");
+
+    // Since effects return a Promise, we're going to make it easy
+    // on ourselves and wrap all of our assertions from this point on
+    // inside a Promise context.
+    return Promise.resolve()
+      // When a Promise is provided as the return value to a Promise's
+      // `.then` callback, the outer Promise awaits the inner before
+      // any subsequent callbacks are fired.
+      .then(() => setGivenName("Alfred"))
+      // Now that `givenName` has been set to "Alfred", we can make an
+      // assertion...
+      .then(() => expect(getState().fullName).to.equal("Alfred Harriman"))
+      // Then we can do the same for the family name...
+      .then(() => setFamilyName("Hitchcock"))
+      // And make one final assertion.
+      .then(() => expect(getState().fullName).to.equal("Alfred Hitchcock"));
+  });
+
+  // You could write similar assertions here
+  it("supports a greeting");
+});
+```
+
+That's it for testing!
+
+
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
 ### Conclusion
