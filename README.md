@@ -765,7 +765,7 @@ describe("state container", () => {
     // state template.  However, so long as you don't try to render the
     // thing, you can get by without doing so, which makes testing your
     // state container that much easier.
-    const { effects, stateContainer: { getState } } = wrapComponentWithState();
+    const { effects, getState } = wrapComponentWithState();
 
     expect(getState().fullName).to.equal("Walter Harriman");
 
