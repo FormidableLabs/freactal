@@ -71,6 +71,7 @@ export class StateContainer {
   }
 
   getState (parentKeys) {
+    parentKeys = parentKeys || [];
     const stateWithComputed = Object.create(null);
     Object.assign(stateWithComputed, this.state);
     this.defineComputedStateProperties(stateWithComputed, parentKeys);
