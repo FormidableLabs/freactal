@@ -127,6 +127,7 @@ export const provideState = opts => StatelessComponent => {
         computed,
         this.pushUpdate.bind(this)
       );
+      this.getState = this.stateContainer.getState.bind(this.stateContainer);
 
       const parentContext = this.context.freactal || {};
       this.effects = getEffects(this.stateContainer, effects, parentContext.effects);
