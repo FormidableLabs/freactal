@@ -46,13 +46,14 @@ Readability counts.
     - [`computed`](#computed)
     - [`middleware`](#middleware)
   - [`injectState`](#injectstate)
-  - [`hydrate`](#hydrate)
+  - [`hydrate` and `initialize`](#hydrate-and-initialize)
 - [Helper functions](#helper-functions)
   - [`hardUpdate`](#hardupdate)
   - [`softUpdate`](#softupdate)
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
   - [with Rapscallion](#with-rapscallion)
+  - [Hydrate state on the client](#hydrate-state-on-the-client)
 
 
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
@@ -865,8 +866,8 @@ provideState({
 
 Each state container can define a special effect called `initialize`.  This effect will be implicitly invoked in two circumstances:
 
-1. During SSR, each state container with an `initialize` effect will invoke it, and the rendering process will wait the resolution of that effect before continuing with rendering.
-2. When running in the browser, each state container with an `initialize` effect wil invoke it when the container is mounted into the DOM.
+1. During SSR, each state container with an `initialize` effect will invoke it, and the rendering process will await the resolution of that effect before continuing with rendering.
+2. When running in the browser, each state container with an `initialize` effect will invoke it when the container is mounted into the DOM.
 
 
 #### `computed`
@@ -943,9 +944,9 @@ const StatefulComponent = injectState(StatelessComponent, ["myValue", "otherValu
 In this example, `StatelessComponent` would re-render when `myValue` changed, but it would also re-render when `otherValueToo` changed, even though that value is not used in the component.
 
 
-### `hydrate`
+### `hydrate` and `initialize`
 
-**TODO**
+These functions are used to deeply initialize state in the SSR context and then re-hydrate that state on the client.  For more information about how to use these functions, see the below documentation on [Server-side Rendering](#server-side-rendering).
 
 
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
@@ -1032,24 +1033,126 @@ effects: {
 ```
 
 
-## Server-side Rendering
-
-**TODO**
-
-### with `React#renderToString`
-
-**TODO**
-
-### with Rapscallion
-
-**TODO**
-
-
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
+## Server-side Rendering
+
+Historically, server-side rendering of stateful React applications has involved many moving pieces.  `freactal` aims to simplify this area without sacrificing the power of its fractal architecture.
+
+There are two parts to achieving SSR with `freactal`: state initialization on the server, and state hydration on the client.
+
+Keep in mind that, if you have a state container whose state needs to be initialized in a particular way, you should take a look at the [`initialize`](#initialize) effect.
+
+`freactal` supports both React's built-in `renderToString` method, as well as the newer [Rapscallion](https://github.com/FormidableLabls/rapscallion).
+
+### with `React#renderToString`
+
+On the server, you'll need to recursively initialize your state tree.  This is accomplished with the `initialize` function, provided by `freactal/server`.
+
+```javascript
+/* First, import renderToString and the initialize function. */
+import { renderToString } from "react-dom/server";
+import { initialize } from "freactal/server";
+
+/*
+  Within the context of your Node.js server route, pass the root component to
+  the initialize function.
+ */
+initialize(<StatefulRootComponent rootProp="hello" />)
+  /* This invocation will return a Promise that resolves to VDOM and state */
+  .then(({ vdom, state }) => {
+    /* Pass the VDOM to renderToString to get HTML out. */
+    const appHTML = renderToString(vdom);
+    /*
+      Pass your application HTML and the application state (an object) to a
+      function that inserts application HTML into <html> and <body> tags,
+      serializes state, and inserts that state into an accessible part of
+      the DOM.
+    */
+    const html = boilerplate(appHTML, state);
+    /* Finally, send the full-page HTML to the client */
+    return res.send(html).end();
+  })
+```
+
+You can find a full `freactal` example, including a server and SSR [here](https://github.com/FormidableLabs/freactal/tree/master/example).
 
 
+### with Rapscallion
+
+The above method involves a partial render of your application (`initialize`), ultimately relying upon `React.renderToString` to transform the VDOM into an HTML string.  This is because `renderToString` is synchronous, and `freactal` is asynchronous by design.
+
+Because Rapscallion is also asynchronous by design, there is even less ceremony involved.
+
+```javascript
+/* First, import Rapscallion's render and the captureState function. */
+import { render } from "rapscallion";
+import { captureState } from "freactal/server";
+
+/*
+  Within the context of your Node.js server route, invoke `captureState` with your root component.
+ */
+const { Captured, state } = captureState(<StatefulRootComponent rootProp="hello" />);
+
+/* Pass the <Captured /> component to Rapscallion's renderer */
+render(<Captured />)
+  .toPromise()
+  .then(appHTML => {
+    /*
+      At this point, the `state` object will be fully populated with your
+      state tree's data.
+
+      Pass your application HTML and state to a function that inserts
+      application HTML into <html> and <body> tags, serializes state, and
+      inserts that state into an accessible part of the DOM.
+    */
+    const html = boilerplate(appHTML, state);
+    /* Finally, send the full-page HTML to the client */
+    return res.send(html).end();
+  });
+```
 
 
+### Hydrate state on the client
 
+Using one of the above methods, you can capture your application state while server-side rendering and insert it into the resulting HTML.  The final piece of the SSR puzzle is re-hydrating your state containers inside the browser.
+
+This is accomplished with `hydrate` in the context of your `initialState` function.
+
+Assuming you've serialized the SSR state and exposed it as `window.__state__`, your root state container should look something like this:
+
+```javascript
+import { provideState, hydrate } from "freactal";
+
+const IS_BROWSER = typeof window === "object";
+const stateTemplate = provideState({
+  initialState: () => IS_BROWSER ?
+    hydrate(window.__state__) :
+    { /* your typical state values */ },
+  effects: { /* ... */ },
+  computed: { /* ... */ }
+});
+```
+
+In SSR, your `typical state values` will be provided as your initial state.  In the browser, the initial state will be read from `window.__state__`.
+
+Assuming you've done this with your root state container, you can similarly re-hydrate nested state containers like so:
+
+```javascript
+import { provideState, hydrate } from "freactal";
+
+const IS_BROWSER = typeof window === "object";
+const stateTemplate = provideState({
+  initialState: () => IS_BROWSER ?
+    hydrate() :
+    { /* your typical state values */ },
+  effects: { /* ... */ },
+  computed: { /* ... */ }
+});
+```
+
+Note that there is no need to pass `window.__state__` to the `hydrate` function for nested state containers.
+
+
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
