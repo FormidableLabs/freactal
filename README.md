@@ -51,7 +51,6 @@ Readability counts.
 - [Helper functions](#helper-functions)
   - [`hardUpdate`](#hardupdate)
   - [`softUpdate`](#softupdate)
-  - [`spread`](#spread)
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
   - [with Rapscallion](#with-rapscallion)
@@ -1041,14 +1040,6 @@ effects: {
   myEffect: softUpdate((state, addVal) => ({ counter: state.counter + addVal }))
 }
 ```
-
-
-### `spread`
-
-**TODO**
-
-
-<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
 ## Server-side Rendering
