@@ -17,7 +17,7 @@ const getInjectedEl = (freactalCxt, keys, useState = false) => {
 };
 
 
-describe.only("injected state", () => {
+describe("injected state", () => {
   it("throws an error if used without state in the tree", () => {
     expect(() => getInjectedEl())
       .to.throw("Attempted to inject state without parent Freactal state container.");
