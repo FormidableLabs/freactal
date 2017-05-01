@@ -38,7 +38,6 @@ Readability counts.
     - [Stateless functional components](#stateless-functional-components)
     - [State and effects](#state-and-effects)
   - [Conclusion](#conclusion)
-- [Architecture](#architecture)
 - [API Documentation](#api-documentation)
   - [`provideState`](#providestate)
     - [`initialState`](#initialstate)
@@ -54,7 +53,6 @@ Readability counts.
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
   - [with Rapscallion](#with-rapscallion)
-- [FAQ](#faq)
 
 
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
@@ -810,14 +808,6 @@ You can also read through the API docs below!
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
-## Architecture
-
-**TODO**
-
-
-<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
-
-
 ## API Documentation
 
 ### `provideState`
@@ -1058,15 +1048,8 @@ effects: {
 <a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
 
 
-## FAQ
 
-**Do you support time-traveling?**
 
-**TODO**
 
-**What middleware is available?**
 
-- [freactal-devtools](https://github.com/FormidableLabs/freactal-devtools)
-- [freactal-logger](https://github.com/FormidableLabs/freactal-logger)
 
-**TODO**
