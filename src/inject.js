@@ -45,12 +45,16 @@ export class BaseInjectStateHoc extends Component {
   }
 
   render () {
-    const state = this.auto ? this.getTrackedState() : this.context.freactal.state;
+    const props = Object.assign({}, this.props);
+    if (this.keys) {
+      this.keys.forEach(key => props[key] = this.context.freactal.state[key]);
+    } else {
+      props.state = this.getTrackedState();
+    }
 
     return (
       <this.StatelessComponent
-        {...this.props}
-        state={state}
+        {...props}
         effects={this.context.freactal.effects}
       />
     );
@@ -73,7 +77,7 @@ export const injectState = (StatelessComponent, keys = null) => {
         throw new Error("Attempted to inject state without parent Freactal state container.");
       }
 
-      this.auto = !keys;
+      this.keys = keys;
       this.shouldUpdate = shouldUpdate;
       this.StatelessComponent = StatelessComponent;
     }

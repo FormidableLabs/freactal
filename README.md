@@ -943,12 +943,12 @@ const WithState = injectState(StatelessComponent);
 
 In the above example, `StatelessComponent` would only be re-rendered a second time if `myValue` changed in the upstream state container.
 
-However, it is possible to explicitly define which keys you want to "listen" to.
+However, it is possible to explicitly define which keys you want to "listen" to.  When using this form, the keys that you specify are injected into the wrapped component as props.
 
 ```javascript
-const StatelessComponent = ({ state: { myValue } }) =>
+const StatelessComponent = ({ myValue }) =>
   <div>{ myValue }</div>
-const WithState = injectState(StatelessComponent, ["myValue", "otherValueToo"]);
+const StatefulComponent = injectState(StatelessComponent, ["myValue", "otherValueToo"]);
 ```
 
 In this example, `StatelessComponent` would re-render when `myValue` changed, but it would also re-render when `otherValueToo` changed, even though that value is not used in the component.
