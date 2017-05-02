@@ -21,7 +21,6 @@ module.exports = () => ({
         path.node.specifiers.reduce((memo, specifier) => {
           return memo || specifier.imported.name === "contextTypes";
         }, false)
-        // import { contextTypes } from "./context";
       ) {
         path.remove();
       } else if (path.node.source.value === "react-dom") {
