@@ -1,0 +1,7 @@
+test:
+  override:
+    - npm run build && npm run check
+
+machine:
+  node:
+    version: v6.9.5

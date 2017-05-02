@@ -4,7 +4,7 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "build": "rm -rf lib/ && npm run build-lib && npm run check",
+    "build": "rm -rf lib/ && npm run build-lib",
     "build-lib": "babel -d lib/ src/",
     "watch": "nodemon --watch ./src --exec npm run build-lib",
     "check": "npm run lint && npm run test",

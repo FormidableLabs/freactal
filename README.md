@@ -1,5 +1,7 @@
 # fr(e)actal
 
+[![CircleCI](https://circleci.com/gh/FormidableLabs/freactal.svg?style=svg)](https://circleci.com/gh/FormidableLabs/freactal)
+
 `freactal` is a composable state management library for React.
 
 The library grew from the idea that state should be just as flexible as your React code; the state containers you build with `freactal` are just components, and you can compose them however you'd like.  In this way, it attempts to address the often exponential relationship between application size and complexity in growing projects.
