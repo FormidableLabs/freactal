@@ -1,9 +1,10 @@
-import { getContext, getChildContext } from "./context";
-import { syncSetState } from "./set-state";
+import { getContext, getChildContext } from "../context";
+import { syncSetState } from "../set-state";
 
 
 const isReactComponent = node => node && typeof node.type === "function";
 const isReactVdom = node => node && typeof node.type === "string";
+
 
 export const partialRender = (node, context) => {
   if (isReactComponent(node)) {
