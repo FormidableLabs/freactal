@@ -1022,7 +1022,7 @@ I.e.
 
 ```javascript
 effects: {
-  updateCounterBy: (state, addVal) => Object.assign({}, state, { counter: state.counter + addVal })
+  updateCounterBy: (effects, addVal) => state => Object.assign({}, state, { counter: state.counter + addVal })
 }
 ```
 
