@@ -252,9 +252,9 @@ The first of those differences relates to asychronicity.  Under the hood, `freac
 ```javascript
 addOne: () => state => Object.assign({}, state, { counter: state.counter + 1 })
 /* vs */
-addOne: () => state => Promise.resolve(Object.assign({}, state, { counter: state.counter + 1 }))
+addOne: () => Promise.resolve(state => Object.assign({}, state, { counter: state.counter + 1 }))
 /* vs */
-addOne: () => state => new Promise(resolve => resolve(Object.assign({}, state, { counter: state.counter + 1 })))
+addOne: () => new Promise(resolve => resolve(state => Object.assign({}, state, { counter: state.counter + 1 })))
 ```
 
 To put it explicitly, the value you provide for each key in your `effects` object is:
