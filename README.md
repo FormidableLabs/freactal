@@ -528,7 +528,7 @@ Before we dive into how that works, let's briefly consider some of the issues th
 These are constraints that `freactal` aims to address.  Let's take a look at a minimal example:
 
 ```javascript
-const Child = injectState(({ state }) => (
+const GrandChild = injectState(({ state }) => (
   <div>
     This is the GrandChild.
     {state.fromParent}
