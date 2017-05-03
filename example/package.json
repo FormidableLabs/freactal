@@ -20,8 +20,12 @@
     "start": "NODE_ENV=development babel-node ./src/server"
   },
   "babel": {
+    "plugins": [
+      ["transform-react-jsx", { "pragma": "h" }],
+      "../build/preact"
+    ],
     "presets": [
-      "react-app"
+      "latest"
     ]
   }
 }
