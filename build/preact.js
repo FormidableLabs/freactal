@@ -25,6 +25,9 @@ module.exports = () => ({
         path.remove();
       } else if (path.node.source.value === "react-dom") {
         path.node.source.value = "preact";
+      } else if (path.node.source.value === "react-dom/server") {
+        path.node.source.value = "preact-render-to-string";
+        path.node.specifiers[0].imported.name = "render";
       }
     },
     AssignmentExpression: path => {
