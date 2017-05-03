@@ -49,6 +49,7 @@
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
     "preact": "^8.1.0",
+    "preact-render-to-string": "^3.6.1",
     "react": "^15.4.2",
     "react-addons-test-utils": "^15.5.1",
     "react-dom": "^15.4.2",
