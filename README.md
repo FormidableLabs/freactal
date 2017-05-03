@@ -530,7 +530,7 @@ These are constraints that `freactal` aims to address.  Let's take a look at a m
 ```javascript
 const Child = injectState(({ state }) => (
   <div>
-    This is the GrandChild.
+    This is the Child.
     {state.fromParent}
     {state.fromGrandParent}
   </div>
@@ -540,7 +540,7 @@ const Parent = provideState({
   initialState: () => ({ fromParent: "ParentValue" })
 })(() => (
   <div>
-    This is the Child.
+    This is the Parent.
     <GrandChild />
   </div>
 ));
@@ -549,8 +549,8 @@ const GrandParent = provideState({
   initialState: () => ({ fromGrandParent: "GrandParentValue" })
 })(() => (
   <div>
-    This is the Parent.
-    <Child />
+    This is the GrandParent.
+    <Parent />
   </div>
 ));
 ```
