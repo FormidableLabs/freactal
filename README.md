@@ -541,7 +541,7 @@ const Parent = provideState({
 })(() => (
   <div>
     This is the Parent.
-    <GrandChild />
+    <Child />
   </div>
 ));
 
