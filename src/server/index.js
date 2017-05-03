@@ -5,7 +5,8 @@ import { constructCapture, captureState } from "./capture";
 
 export const initialize = rootNode => {
   const { state, context } = constructCapture();
-  return resolvePromiseTree(partialRender(rootNode, context))
+  const isPreact = !!rootNode.nodeName;
+  return resolvePromiseTree(partialRender(rootNode, context), isPreact)
     .then(vdom => ({ vdom, state }));
 };
 
