@@ -570,7 +570,7 @@ Child effects can also trigger parent effects.  Let's say your UX team has indic
 ```javascript
 const Child = injectState(({ state, effects }) => (
   <div>
-    This is the GrandChild.
+    This is the Child.
     {state.fromParent}
     {state.fromGrandParent}
     <button
@@ -593,8 +593,8 @@ const Parent = provideState({
   }
 })(() => (
   <div>
-    This is the Child.
-    <GrandChild />
+    This is the Parent.
+    <Child />
   </div>
 ));
 
@@ -606,8 +606,8 @@ const GrandParent = provideState({
   }
 })(() => (
   <div>
-    This is the Parent.
-    <Child />
+    This is the GrandParent.
+    <Parent />
   </div>
 ));
 ```
