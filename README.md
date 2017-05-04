@@ -630,7 +630,6 @@ First, our application code:
 ```javascript
 /*** app.js ***/
 
-import { injectState } from "freactal";
 import { wrapComponentWithState } from "./state";
 
 
@@ -778,12 +777,12 @@ describe("state container", () => {
       // When a Promise is provided as the return value to a Promise's
       // `.then` callback, the outer Promise awaits the inner before
       // any subsequent callbacks are fired.
-      .then(() => setGivenName("Alfred"))
+      .then(() => effects.setGivenName("Alfred"))
       // Now that `givenName` has been set to "Alfred", we can make an
       // assertion...
       .then(() => expect(getState().fullName).to.equal("Alfred Harriman"))
       // Then we can do the same for the family name...
-      .then(() => setFamilyName("Hitchcock"))
+      .then(() => effects.setFamilyName("Hitchcock"))
       // And make one final assertion.
       .then(() => expect(getState().fullName).to.equal("Alfred Hitchcock"));
   });
