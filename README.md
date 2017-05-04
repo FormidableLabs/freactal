@@ -530,7 +530,7 @@ These are constraints that `freactal` aims to address.  Let's take a look at a m
 ```javascript
 const Child = injectState(({ state }) => (
   <div>
-    This is the GrandChild.
+    This is the Child.
     {state.fromParent}
     {state.fromGrandParent}
   </div>
@@ -540,8 +540,8 @@ const Parent = provideState({
   initialState: () => ({ fromParent: "ParentValue" })
 })(() => (
   <div>
-    This is the Child.
-    <GrandChild />
+    This is the Parent.
+    <Child />
   </div>
 ));
 
@@ -549,8 +549,8 @@ const GrandParent = provideState({
   initialState: () => ({ fromGrandParent: "GrandParentValue" })
 })(() => (
   <div>
-    This is the Parent.
-    <Child />
+    This is the GrandParent.
+    <Parent />
   </div>
 ));
 ```
@@ -570,7 +570,7 @@ Child effects can also trigger parent effects.  Let's say your UX team has indic
 ```javascript
 const Child = injectState(({ state, effects }) => (
   <div>
-    This is the GrandChild.
+    This is the Child.
     {state.fromParent}
     {state.fromGrandParent}
     <button
@@ -593,8 +593,8 @@ const Parent = provideState({
   }
 })(() => (
   <div>
-    This is the Child.
-    <GrandChild />
+    This is the Parent.
+    <Child />
   </div>
 ));
 
@@ -606,8 +606,8 @@ const GrandParent = provideState({
   }
 })(() => (
   <div>
-    This is the Parent.
-    <Child />
+    This is the GrandParent.
+    <Parent />
   </div>
 ));
 ```
@@ -630,7 +630,6 @@ First, our application code:
 ```javascript
 /*** app.js ***/
 
-import { injectState } from "freactal";
 import { wrapComponentWithState } from "./state";
 
 
@@ -778,12 +777,12 @@ describe("state container", () => {
       // When a Promise is provided as the return value to a Promise's
       // `.then` callback, the outer Promise awaits the inner before
       // any subsequent callbacks are fired.
-      .then(() => setGivenName("Alfred"))
+      .then(() => effects.setGivenName("Alfred"))
       // Now that `givenName` has been set to "Alfred", we can make an
       // assertion...
       .then(() => expect(getState().fullName).to.equal("Alfred Harriman"))
       // Then we can do the same for the family name...
-      .then(() => setFamilyName("Hitchcock"))
+      .then(() => effects.setFamilyName("Hitchcock"))
       // And make one final assertion.
       .then(() => expect(getState().fullName).to.equal("Alfred Hitchcock"));
   });
