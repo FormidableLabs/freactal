@@ -1045,7 +1045,7 @@ There are two parts to achieving SSR with `freactal`: state initialization on th
 
 Keep in mind that, if you have a state container whose state needs to be initialized in a particular way, you should take a look at the [`initialize`](#initialize) effect.
 
-`freactal` supports both React's built-in `renderToString` method, as well as the newer [Rapscallion](https://github.com/FormidableLabls/rapscallion).
+`freactal` supports both React's built-in `renderToString` method, as well as the newer [Rapscallion](https://github.com/FormidableLabs/rapscallion).
 
 ### with `React#renderToString`
 
