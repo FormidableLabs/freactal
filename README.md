@@ -718,7 +718,7 @@ describe("my app", () => {
     const el = mount(<App state={state} effects={effects}>);
 
     // And then we can make assertions on the output.
-    expect(el.find(".greeting").text()).to.equal("Howdy there, kid!");
+    expect(el.find("#greeting").text()).to.equal("Howdy there, kid!");
   });
 
   it("accepts changes to the given name", () => {
