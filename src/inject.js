@@ -15,7 +15,10 @@ export class BaseInjectStateHoc extends Component {
 
   componentWillUnmount () {
     this.mounted = false;
-    this.unsubscribe();
+    // this.unsubscribe may be undefined due to an error in child render
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   update (changedKeys) {
