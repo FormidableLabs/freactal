@@ -1,6 +1,5 @@
-import { PropTypes } from "react";
-
+import { object } from "prop-types";
 
 export const contextTypes = {
-  freactal: PropTypes.object
+  freactal: object
 };
