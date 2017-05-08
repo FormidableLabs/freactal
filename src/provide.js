@@ -37,7 +37,10 @@ export class BaseStatefulComponent extends Component {
   }
 
   componentWillUnmount () {
-    this.unsubscribe();
+    // this.unsubscribe may be undefined due to an error in child render
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   subscribe (onUpdate) {
