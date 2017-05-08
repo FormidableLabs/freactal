@@ -1,15 +1,13 @@
 import "isomorphic-fetch";
-import { softUpdate } from "../../..";
+import { update } from "../../..";
 
 const IS_BROWSER = typeof window === "object";
-
-const update = newState => state => Object.assign({}, state, newState);
 
 const wrapWithPending = cb => (effects, ...args) => effects.setDataPending(true)
   .then(() => cb(...args))
   .then(value => effects.setDataPending(false).then(() => value));
 
-export const setDataPending = softUpdate((state, value) => ({ pending: value }));
+export const setDataPending = update((state, value) => ({ pending: value }));
 
 const delay = ms => val => new Promise(resolve => setTimeout(() => resolve(val), ms));
 
