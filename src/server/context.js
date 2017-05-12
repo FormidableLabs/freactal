@@ -1,4 +1,5 @@
-import { assign, keys } from "lodash";
+import assign from "lodash/assign";
+import keys from "lodash/keys";
 
 /**
  * Code originally borrowed from the Rapscallion project:

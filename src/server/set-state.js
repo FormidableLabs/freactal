@@ -1,5 +1,6 @@
 /* eslint-disable no-invalid-this */
-import { isFunction, assign } from "lodash";
+import isFunction from "lodash/isFunction";
+import assign from "lodash/assign";
 
 
 /**
