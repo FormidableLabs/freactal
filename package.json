@@ -31,6 +31,9 @@
     "url": "https://github.com/divmain/freactal/issues"
   },
   "homepage": "https://github.com/divmain/freactal#readme",
+  "peerDependencies": {
+    "react": "^15.5.4"
+  },
   "devDependencies": {
     "babel-cli": "^6.24.0",
     "babel-eslint": "^7.2.1",
