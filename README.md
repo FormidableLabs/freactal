@@ -664,7 +664,7 @@ And then our state template:
 ```javascript
 /*** state.js ***/
 
-import { provideState } from "freactal";
+import { provideState, softUpdate } from "freactal";
 
 export const wrapComponentWithState = provideState({
   initialState: () => ({
@@ -715,7 +715,7 @@ describe("my app", () => {
     const effects = {};
 
     // First, we mount the component, providing the expected state and effects.
-    const el = mount(<App state={state} effects={effects}>);
+    const el = mount(<App state={state} effects={effects}/>);
 
     // And then we can make assertions on the output.
     expect(el.find("#greeting").text()).to.equal("Howdy there, kid!");
@@ -729,7 +729,7 @@ describe("my app", () => {
       setFamilyName: sinon.spy()
     };
 
-    const el = mount(<App state={state} effects={effects}>);
+    const el = mount(<App state={state} effects={effects}/>);
 
     // Using `sinon-chai`, we can make readable assertions about whether
     // a spy function has been called.  We don't expect our effect to
