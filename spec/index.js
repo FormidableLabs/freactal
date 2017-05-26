@@ -45,7 +45,7 @@ const specFile = /\.spec\.js$/;
 const recursiveRequire = (basepath, cb) => fs.readdirSync(basepath).forEach(filename => {
   const filepath = path.join(basepath, filename);
   if (fs.statSync(filepath).isDirectory()) {
-    recursiveRequire(filepath, cb);
+    describe(filename, () => recursiveRequire(filepath, cb));
   } else if (specFile.test(filename)) {
     require(filepath);
   }
