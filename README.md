@@ -52,6 +52,7 @@ Readability counts.
 - [Helper functions](#helper-functions)
   - [`hardUpdate`](#hardupdate)
   - [`softUpdate`](#softupdate)
+  - ['mergeIntoState'](#mergeintostate)
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
   - [with Rapscallion](#with-rapscallion)
@@ -1031,6 +1032,29 @@ is equivalent to:
 effects: {
   myEffect: softUpdate((state, addVal) => ({ counter: state.counter + addVal }))
 }
+```
+
+
+### `mergeIntoState`
+
+Both `hardUpdate` and `softUpdate` are intended for synchronous updates only.  But writing out a state-update function for asynchronous effects can get tedious.  That's where `mergeIntoState` comes in.
+
+```javascript
+mergeIntoState(newData)
+```
+
+... is exactly equivalent to...
+
+```javascript
+state => Object.assign({}, state, newData)
+```
+
+Here's what it might look like in practice:
+
+```javascript
+export const getData = (effects, dataId) => fetch(`http://some.url/${dataId}`)
+  .then(response => response.json())
+  .then(body => mergeIntoState({ data: body.data }));
 ```
 
 

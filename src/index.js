@@ -3,5 +3,6 @@ export { hydrate } from "./state";
 export { injectState } from "./inject";
 export {
   hardUpdate,
-  softUpdate
+  softUpdate,
+  mergeIntoState
 } from "./helpers";
