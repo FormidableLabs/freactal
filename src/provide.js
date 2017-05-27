@@ -84,6 +84,9 @@ export class BaseStatefulComponent extends Component {
   }
 
   relayUpdate (changedKeys) {
+    // When updates are relayed, the context needs to be updated here; otherwise, the state object
+    // will refer to stale parent data when subscribers re-render.
+    Object.assign(this.childContext, this.buildContext());
     const relayedChangedKeys = this.invalidateChanged(changedKeys);
     return Promise.all(this.subscribers.map(subscriber =>
       subscriber && subscriber(relayedChangedKeys)
