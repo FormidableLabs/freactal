@@ -85,7 +85,9 @@ export class BaseStatefulComponent extends Component {
 
   relayUpdate (changedKeys) {
     const relayedChangedKeys = this.invalidateChanged(changedKeys);
-    this.subscribers.forEach(cb => cb && cb(relayedChangedKeys));
+    return Promise.all(this.subscribers.map(subscriber =>
+      subscriber && subscriber(relayedChangedKeys)
+    ));
   }
 
   pushUpdate (changedKeys) {
@@ -93,16 +95,17 @@ export class BaseStatefulComponent extends Component {
       return Promise.resolve();
     }
 
-    return Promise.resolve().then(() => {
-      // In an SSR environment, the component will not yet have rendered, and the child
-      // context will not yet be generated.  The subscribers don't need to be notified,
-      // as they will contain correct context on their initial render.
-      if (this.childContext) {
-        Object.assign(this.childContext, this.buildContext());
-        const relayedChangedKeys = this.invalidateChanged(changedKeys);
-        this.subscribers.forEach(cb => cb && cb(relayedChangedKeys));
-      }
-    });
+    // In an SSR environment, the component will not yet have rendered, and the child
+    // context will not yet be generated.  The subscribers don't need to be notified,
+    // as they will contain correct context on their initial render.
+    if (!this.childContext) { return Promise.resolve(); }
+
+    Object.assign(this.childContext, this.buildContext());
+    const relayedChangedKeys = this.invalidateChanged(changedKeys);
+
+    return Promise.all(this.subscribers.map(subscriber =>
+      subscriber && subscriber(relayedChangedKeys)
+    ));
   }
 
   render () {

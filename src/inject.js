@@ -22,9 +22,9 @@ export class BaseInjectStateHoc extends Component {
   }
 
   update (changedKeys) {
-    if (this.mounted && this.shouldUpdate(changedKeys, this.usedKeys)) {
-      this.forceUpdate();
-    }
+    return this.mounted && this.shouldUpdate(changedKeys, this.usedKeys) ?
+      new Promise(resolve => this.forceUpdate(resolve)) :
+      Promise.resolve();
   }
 
   getTrackedState () {
