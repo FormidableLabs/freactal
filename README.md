@@ -763,9 +763,9 @@ import { wrapComponentWithState } from "./state";
 describe("state container", () => {
   it("supports fullName", () => {
     // Normally, you'd pass a component as the first argument to your
-    // state template.  However, so long as you don't try to render the
-    // thing, you can get by without doing so, which makes testing your
-    // state container that much easier.
+    // state template.  However, if you pass no argument to the state
+    // template, you'll get back a test instance that you can extract
+    // `state` and `effects` from.  Just don't try to render the thing!
     const { effects, getState } = wrapComponentWithState();
 
     expect(getState().fullName).to.equal("Walter Harriman");

@@ -152,5 +152,10 @@ export const provideState = opts => StatelessComponent => {
   StatefulComponent.childContextTypes = contextTypes;
   StatefulComponent.contextTypes = contextTypes;
 
+  // This provides a low-effort way to get at a StatefulComponent instance for testing purposes.
+  if (!StatelessComponent) {
+    return new StatefulComponent(null, {});
+  }
+
   return StatefulComponent;
 };
