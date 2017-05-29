@@ -1,5 +1,6 @@
 import { getEffects } from "freactal/lib/effects";
 
+
 describe("effects", () => {
   it("returns an object with same keys as effect definition object", () => {
     const hocState = {
@@ -56,5 +57,34 @@ describe("effects", () => {
       expect(childHocState.setState).to.have.been.calledOnce;
       expect(childHocState.setState).to.have.been.calledWith({ childVal: "child" });
     });
+  });
+
+  it("can be defined as an async function", async () => {
+    let state = { loading: 0, data: null };
+    const hocState = {
+      setState: sinon.spy(newState => Promise.resolve(hocState.state = state = newState)),
+      state
+    };
+
+    const getData = () => Promise.resolve({ data: "data!" });
+
+    const effects = getEffects(hocState, {
+      getData: async ({ setLoading }) => {
+        await setLoading(true);
+        expect(state).to.have.property("loading", 1);
+        expect(state).to.have.property("data", null);
+        const { data } = await getData();
+        expect(state).to.have.property("data", null);
+        await setLoading(false);
+        expect(state).to.have.property("loading", 0);
+        return oldState => Object.assign({}, oldState, { data });
+      },
+      setLoading: ({ loading }, isStarting) => oldState =>
+        Object.assign({}, oldState, { loading: oldState.loading + (isStarting ? 1 : -1) })
+    });
+
+    await effects.getData();
+
+    expect(state).to.have.property("data", "data!");
   });
 });

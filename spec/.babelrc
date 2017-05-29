@@ -3,5 +3,7 @@
     "./_util/babel-resolve-paths-plugin",
     "transform-react-jsx"
   ],
-  "presets": ["latest"]
+  "presets": [
+  	["latest", { "es2017": false }]
+  ]
 }

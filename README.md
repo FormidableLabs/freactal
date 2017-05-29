@@ -8,7 +8,7 @@ The library grew from the idea that state should be just as flexible as your Rea
 
 Like Flux and React in general, `freactal` builds on the principle of unidirectional flow of data.  However, it does so in a way that feels idiomatic to ES2015+ and doesn't get in your way.
 
-When building an application, it can replace [`redux`](redux.js.org), [`MobX`](https://mobx.js.org), [`reselect`](https://github.com/reactjs/reselect), [`redux-loop`](https://github.com/redux-loop/redux-loop), [`redux-thunk`](https://github.com/gaearon/redux-thunk), [`redux-saga`](https://github.com/redux-saga/redux-saga), `[fill-in-the-blank sub-app composition technique]`, and potentially [`recompose`](https://github.com/acdlite/recompose), depending on how you're using it.
+When building an application, it can replace [`redux`](https://redux.js.org), [`MobX`](https://mobx.js.org), [`reselect`](https://github.com/reactjs/reselect), [`redux-loop`](https://github.com/redux-loop/redux-loop), [`redux-thunk`](https://github.com/gaearon/redux-thunk), [`redux-saga`](https://github.com/redux-saga/redux-saga), `[fill-in-the-blank sub-app composition technique]`, and potentially [`recompose`](https://github.com/acdlite/recompose), depending on how you're using it.
 
 Its design philosophy aligns closely with the [Zen of Python](https://www.python.org/dev/peps/pep-0020/):
 
@@ -51,6 +51,7 @@ Readability counts.
   - [`hydrate` and `initialize`](#hydrate-and-initialize)
 - [Helper functions](#helper-functions)
   - [`update`](#update)
+  - ['mergeIntoState'](#mergeintostate)
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
   - [with Rapscallion](#with-rapscallion)
@@ -663,7 +664,7 @@ And then our state template:
 ```javascript
 /*** state.js ***/
 
-import { provideState } from "freactal";
+import { provideState, softUpdate } from "freactal";
 
 export const wrapComponentWithState = provideState({
   initialState: () => ({
@@ -714,7 +715,7 @@ describe("my app", () => {
     const effects = {};
 
     // First, we mount the component, providing the expected state and effects.
-    const el = mount(<App state={state} effects={effects}>);
+    const el = mount(<App state={state} effects={effects}/>);
 
     // And then we can make assertions on the output.
     expect(el.find("#greeting").text()).to.equal("Howdy there, kid!");
@@ -728,7 +729,7 @@ describe("my app", () => {
       setFamilyName: sinon.spy()
     };
 
-    const el = mount(<App state={state} effects={effects}>);
+    const el = mount(<App state={state} effects={effects}/>);
 
     // Using `sinon-chai`, we can make readable assertions about whether
     // a spy function has been called.  We don't expect our effect to
@@ -762,9 +763,9 @@ import { wrapComponentWithState } from "./state";
 describe("state container", () => {
   it("supports fullName", () => {
     // Normally, you'd pass a component as the first argument to your
-    // state template.  However, so long as you don't try to render the
-    // thing, you can get by without doing so, which makes testing your
-    // state container that much easier.
+    // state template.  However, if you pass no argument to the state
+    // template, you'll get back a test instance that you can extract
+    // `state` and `effects` from.  Just don't try to render the thing!
     const { effects, getState } = wrapComponentWithState();
 
     expect(getState().fullName).to.equal("Walter Harriman");
@@ -1025,6 +1026,29 @@ is equivalent to:
 effects: {
   myEffect: update((state, addVal) => ({ counter: state.counter + addVal }))
 }
+```
+
+
+### `mergeIntoState`
+
+Both `hardUpdate` and `softUpdate` are intended for synchronous updates only.  But writing out a state-update function for asynchronous effects can get tedious.  That's where `mergeIntoState` comes in.
+
+```javascript
+mergeIntoState(newData)
+```
+
+... is exactly equivalent to...
+
+```javascript
+state => Object.assign({}, state, newData)
+```
+
+Here's what it might look like in practice:
+
+```javascript
+export const getData = (effects, dataId) => fetch(`http://some.url/${dataId}`)
+  .then(response => response.json())
+  .then(body => mergeIntoState({ data: body.data }));
 ```
 
 

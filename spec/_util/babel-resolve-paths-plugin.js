@@ -2,7 +2,7 @@
 const { resolve } = require("path");
 
 
-const freactalRoot = /^freactal(?=\/)/;
+const freactalRoot = /^freactal(?=\/)?/;
 const replacement = resolve(__dirname, "../..");
 
 

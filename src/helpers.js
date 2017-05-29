@@ -18,3 +18,4 @@ export const softUpdate = fn => {
 };
 export const update = fnOrNewState =>
   typeof fnOrNewState === "function" ? softUpdate(fnOrNewState) : hardUpdate(fnOrNewState);
+export const mergeIntoState = dataToMerge => state => Object.assign({}, state, dataToMerge);

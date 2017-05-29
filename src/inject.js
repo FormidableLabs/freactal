@@ -15,13 +15,16 @@ export class BaseInjectStateHoc extends Component {
 
   componentWillUnmount () {
     this.mounted = false;
-    this.unsubscribe();
+    // this.unsubscribe may be undefined due to an error in child render
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   update (changedKeys) {
-    if (this.mounted && this.shouldUpdate(changedKeys, this.usedKeys)) {
-      this.forceUpdate();
-    }
+    return this.mounted && this.shouldUpdate(changedKeys, this.usedKeys) ?
+      new Promise(resolve => this.forceUpdate(resolve)) :
+      Promise.resolve();
   }
 
   getTrackedState () {

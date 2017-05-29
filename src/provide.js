@@ -37,7 +37,10 @@ export class BaseStatefulComponent extends Component {
   }
 
   componentWillUnmount () {
-    this.unsubscribe();
+    // this.unsubscribe may be undefined due to an error in child render
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
   }
 
   subscribe (onUpdate) {
@@ -81,8 +84,13 @@ export class BaseStatefulComponent extends Component {
   }
 
   relayUpdate (changedKeys) {
+    // When updates are relayed, the context needs to be updated here; otherwise, the state object
+    // will refer to stale parent data when subscribers re-render.
+    Object.assign(this.childContext, this.buildContext());
     const relayedChangedKeys = this.invalidateChanged(changedKeys);
-    this.subscribers.forEach(cb => cb && cb(relayedChangedKeys));
+    return Promise.all(this.subscribers.map(subscriber =>
+      subscriber && subscriber(relayedChangedKeys)
+    ));
   }
 
   pushUpdate (changedKeys) {
@@ -90,16 +98,17 @@ export class BaseStatefulComponent extends Component {
       return Promise.resolve();
     }
 
-    return Promise.resolve().then(() => {
-      // In an SSR environment, the component will not yet have rendered, and the child
-      // context will not yet be generated.  The subscribers don't need to be notified,
-      // as they will contain correct context on their initial render.
-      if (this.childContext) {
-        Object.assign(this.childContext, this.buildContext());
-        const relayedChangedKeys = this.invalidateChanged(changedKeys);
-        this.subscribers.forEach(cb => cb && cb(relayedChangedKeys));
-      }
-    });
+    // In an SSR environment, the component will not yet have rendered, and the child
+    // context will not yet be generated.  The subscribers don't need to be notified,
+    // as they will contain correct context on their initial render.
+    if (!this.childContext) { return Promise.resolve(); }
+
+    Object.assign(this.childContext, this.buildContext());
+    const relayedChangedKeys = this.invalidateChanged(changedKeys);
+
+    return Promise.all(this.subscribers.map(subscriber =>
+      subscriber && subscriber(relayedChangedKeys)
+    ));
   }
 
   render () {
@@ -142,6 +151,11 @@ export const provideState = opts => StatelessComponent => {
 
   StatefulComponent.childContextTypes = contextTypes;
   StatefulComponent.contextTypes = contextTypes;
+
+  // This provides a low-effort way to get at a StatefulComponent instance for testing purposes.
+  if (!StatelessComponent) {
+    return new StatefulComponent(null, {});
+  }
 
   return StatefulComponent;
 };
