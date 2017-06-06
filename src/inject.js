@@ -66,11 +66,9 @@ export class BaseInjectStateHoc extends Component {
 
 export const injectState = (StatelessComponent, keys = null) => {
   const shouldUpdate = keys ?
-    changedKeys => keys.reduce((memo, key) => memo || changedKeys[key], false) :
+    changedKeys => keys.some(key => changedKeys[key], false) :
     (changedKeys, usedKeys) => usedKeys ?
-      Object.keys(usedKeys)
-        .filter(key => usedKeys[key])
-        .reduce((memo, key) => memo || changedKeys[key], false) :
+      Object.keys(usedKeys).some(key => usedKeys[key] && changedKeys[key]) :
       true;
 
   class InjectStateHoc extends BaseInjectStateHoc {
