@@ -1,7 +1,11 @@
+const isFunction = (func) => func && typeof func === "function"
+
 export const getEffects = (hocState, effectDefs, parentEffects) => {
   const applyReducer = reducer => {
-    const result = reducer ? reducer(hocState.state) : null;
-    if (result) {
+    let result = reducer;
+
+    if (isFunction(reducer)) {
+      result = reducer(hocState.state);
       hocState.setState(result);
     }
 
