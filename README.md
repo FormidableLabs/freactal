@@ -860,7 +860,7 @@ provideState({
 });
 ```
 
-**NOTE:** IThe `effects` object that is passed to each effect is _not_ the same as the outer effects object that you define here.  Instead, that object is a composition of the hierarchy of stateful effects.
+**NOTE:** The `effects` object that is passed to each effect is _not_ the same as the outer effects object that you define here.  Instead, that object is a composition of the hierarchy of stateful effects.
 
 
 ##### `initialize`
