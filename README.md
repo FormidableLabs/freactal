@@ -50,8 +50,7 @@ Readability counts.
   - [`injectState`](#injectstate)
   - [`hydrate` and `initialize`](#hydrate-and-initialize)
 - [Helper functions](#helper-functions)
-  - [`hardUpdate`](#hardupdate)
-  - [`softUpdate`](#softupdate)
+  - [`update`](#update)
   - ['mergeIntoState'](#mergeintostate)
 - [Server-side Rendering](#server-side-rendering)
   - [with `React#renderToString`](#with-reactrendertostring)
@@ -217,13 +216,13 @@ You might be wondering why we have that extra `() =>` right before `state =>` in
 
 In the above example, we've defined an effect that, when invoked, will update the `counter` in our state container by adding `1`.
 
-Since updating an element of state based on previous state (and potentially new information) is something you'll be doing often, `freactal` [provides a shorthand](#softupdate) to make this a bit more readable:
+Since updating an element of state based on previous state (and potentially new information) is something you'll be doing often, `freactal` [provides a shorthand](#update) to make this a bit more readable:
 
 ```javascript
 const wrapComponentWithState = provideState({
   initialState: () => ({ counter: 0 }),
   effects: {
-    addOne: softUpdate(state => ({ counter: state.counter + 1 }))
+    addOne: update(state => ({ counter: state.counter + 1 }))
   }
 });
 ```
@@ -314,7 +313,7 @@ const wrapComponentWithState = provideState({
     postsPending: false
   }),
   effects: {
-    setPostsPending: softUpdate((state, postsPending) => ({ postsPending })),
+    setPostsPending: update((state, postsPending) => ({ postsPending })),
     getPosts: effects => effects.setPostsPending(true)
       .then(() => fetch("/api/posts"))
       .then(result => result.json())
@@ -359,7 +358,7 @@ const wrapComponentWithState = provideState({
     postsPending: false
   }),
   effects: {
-    setFlag: softUpdate((state, key, value) => ({ [key]: value })),
+    setFlag: update((state, key, value) => ({ [key]: value })),
     getPosts: wrapWithPending("postsPending", () => fetch("/api/posts")
       .then(result => result.json())
       .then(({ posts }) => state => Object.assign({}, state, { posts }))
@@ -422,8 +421,8 @@ const wrapComponentWithState = provideState({
     familyName: "Harriman"
   }),
   effects: {
-    setGivenName: softUpdate((state, val) => ({ givenName: val })),
-    setFamilyName: softUpdate((state, val) => ({ familyName: val }))
+    setGivenName: update((state, val) => ({ givenName: val })),
+    setFamilyName: update((state, val) => ({ familyName: val }))
   }
 });
 ```
@@ -463,8 +462,8 @@ const wrapComponentWithState = provideState({
     locale: "en-us"
   }),
   effects: {
-    setGivenName: softUpdate((state, val) => ({ givenName: val })),
-    setFamilyName: softUpdate((state, val) => ({ familyName: val }))
+    setGivenName: update((state, val) => ({ givenName: val })),
+    setFamilyName: update((state, val) => ({ familyName: val }))
   },
   computed: {
     fullName: ({ givenName, familyName, locale }) => startsWith(locale, "en") ?
@@ -673,8 +672,8 @@ export const wrapComponentWithState = provideState({
     familyName: "Harriman"
   }),
   effects: {
-    setGivenName: softUpdate((state, val) => ({ givenName: val })),
-    setFamilyName: softUpdate((state, val) => ({ familyName: val }))
+    setGivenName: update((state, val) => ({ givenName: val })),
+    setFamilyName: update((state, val) => ({ familyName: val }))
   },
   computed: {
     fullName: ({ givenName, familyName }) => `${givenName} ${familyName}`,
@@ -959,18 +958,18 @@ These functions are used to deeply initialize state in the SSR context and then 
 You may find the following functions handy, as a shorthand for common tasks.
 
 
-### `hardUpdate`
+### `update`
 
-This handy helper provides better ergonomics when defining an effect that updates state, regardless of the previous state.
+This handy helper provides better ergonomics when defining an effect that updates state.
 
 It can be consumed like so:
 
 ```javascript
-import { provideState, hardUpdate } from "freactal";
+import { provideState, update } from "freactal";
 const wrapComponentWithState = provideState({
   // ...
   effects: {
-    myEffect: hardUpdate({ setThisKey: "to this value..." })
+    myEffect: update({ setThisKey: "to this value..." })
   }
 });
 ```
@@ -987,19 +986,14 @@ const wrapComponentWithState = provideState({
 });
 ```
 
-
-### `softUpdate`
-
-`softUpdate` is provides a shorthand for updating an element of state that _is_ dependant on the previous state.
-
-It can be consumed like so:
+When your update _is_ dependant on the previous state you can pass a function, like so:
 
 ```javascript
-import { provideState, softUpdate } from "freactal";
+import { provideState, update } from "freactal";
 const wrapComponentWithState = provideState({
   // ...
   effects: {
-    myEffect: softUpdate(state => ({ counter: state.counter + 1 }))
+    myEffect: update(state => ({ counter: state.counter + 1 }))
   }
 });
 ```
@@ -1007,7 +1001,7 @@ const wrapComponentWithState = provideState({
 Which is equivalent to the following:
 
 ```javascript
-import { provideState, softUpdate } from "freactal";
+import { provideState } from "freactal";
 const wrapComponentWithState = provideState({
   // ...
   effects: {
@@ -1016,7 +1010,7 @@ const wrapComponentWithState = provideState({
 });
 ```
 
-Any arguments that are passed to the invocation of your effect will also be passed to the function you provide to `softUpdate`.
+Any arguments that are passed to the invocation of your effect will also be passed to the function you provide to `update`.
 
 I.e.
 
@@ -1030,7 +1024,7 @@ is equivalent to:
 
 ```javascript
 effects: {
-  myEffect: softUpdate((state, addVal) => ({ counter: state.counter + addVal }))
+  myEffect: update((state, addVal) => ({ counter: state.counter + addVal }))
 }
 ```
 
