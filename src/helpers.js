@@ -17,15 +17,15 @@ export const softUpdate = fn => {
 };
 
 export const update = fnOrNewState => {
-  if (typeof fnOrNewState === 'function') {
-    return softUpdate(fnOrNewState)
+  if (typeof fnOrNewState === "function") {
+    return softUpdate(fnOrNewState);
   }
 
-  if (typeof fnOrNewState === 'object') {
-    return hardUpdate(fnOrNewState)
+  if (typeof fnOrNewState === "object") {
+    return hardUpdate(fnOrNewState);
   }
 
   throw new Error("update must receive a reducer function or object to merge as its argument.");
-}
+};
 
 export const mergeIntoState = dataToMerge => state => Object.assign({}, state, dataToMerge);
