@@ -345,7 +345,7 @@ And because all of this is just `Promise` composition, you can put together help
 ```javascript
 const wrapWithPending = (pendingKey, cb) => effects  =>
   effects.setFlag(pendingKey, true)
-    .then(cb)
+    .then(() => cb)
     .then(value => effects.setFlag(pendingKey, false).then(() => value));
 ```
 
