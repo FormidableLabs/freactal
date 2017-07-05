@@ -1,0 +1,47 @@
+log: true
+pullRequest:
+  preamble: >
+    The maintainers of this repo require that all pull request submitters adhere to the following:
+  items:
+    - prompt: >
+        I have read and will comply with the
+        [contribution guidelines](https://github.com/FormidableLabs/freactal/blob/master/CONTRIBUTE.md).
+      default: false
+      required: true
+    - prompt: >
+        I have read and will comply with the
+        [code of conduct](https://github.com/FormidableLabs/freactal/blob/master/CONTRIBUTE.md).
+      default: false
+      required: true
+    - prompt: All related documentation has been updated to reflect the changes made.
+      default: false
+      required: true
+    - prompt: My commit messages are cleaned up and ready to merge.
+      default: false
+      required: true
+  semver:
+    enabled: true
+commit:
+  subject:
+    mustHaveLengthBetween: [8, 100]
+    mustMatch: !!js/regexp /^(Fix|Enhancement|Feature|Docs|Other):\s.*/
+    mustNotMatch: !!js/regexp /^fixup!/
+  message:
+    enforceEmptySecondLine: true
+    linesMustHaveLengthBetween: [0, 100]
+issue:
+  onLabelAdded:
+    not-enough-information:
+      action: comment
+      data: |
+        This issue has been tagged with the `not-enough-information` label.  In order for us to help you,
+        please respond with the following information:
+
+        - A description of the problem, including any relevant error output that can find.
+        - A full repro, if possible.  Otherwise, steps to reproduce.
+        - The versions of the packages that you are using.
+        - The operating system that you are using.
+        - The browser or environment where the issue occurs.
+
+        If we receive no response to this issue within 2 weeks, the issue will be closed.  If that happens,
+        feel free to re-open with the requested information.  Thank you!
