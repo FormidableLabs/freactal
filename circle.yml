@@ -4,4 +4,10 @@ test:
 
 machine:
   node:
-    version: 7
+    version: 8
+
+deployment:
+  production:
+    branch: master
+    commands:
+    - ./deploy.sh
