@@ -30,7 +30,7 @@ export class BaseStatefulComponent extends Component {
   }
 
   componentDidMount () {
-    if (this.effects.initialize) { this.effects.initialize(); }
+    if (this.effects.initialize) { this.effects.initialize(this.props); }
     this.unsubscribe = this.context.freactal ?
       this.context.freactal.subscribe(this.relayUpdate.bind(this)) :
       () => {};
