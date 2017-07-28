@@ -870,6 +870,8 @@ Each state container can define a special effect called `initialize`.  This effe
 1. During SSR, each state container with an `initialize` effect will invoke it, and the rendering process will await the resolution of that effect before continuing with rendering.
 2. When running in the browser, each state container with an `initialize` effect will invoke it when the container is mounted into the DOM.
 
+Note: this effect will NOT be passed down to a component's children.
+
 
 #### `computed`
 
