@@ -664,7 +664,7 @@ And then our state template:
 ```javascript
 /*** state.js ***/
 
-import { provideState, softUpdate } from "freactal";
+import { provideState, update } from "freactal";
 
 export const wrapComponentWithState = provideState({
   initialState: () => ({
@@ -1033,7 +1033,7 @@ effects: {
 
 ### `mergeIntoState`
 
-Both `hardUpdate` and `softUpdate` are intended for synchronous updates only.  But writing out a state-update function for asynchronous effects can get tedious.  That's where `mergeIntoState` comes in.
+`update` is intended for synchronous updates only.  But writing out a state-update function for asynchronous effects can get tedious.  That's where `mergeIntoState` comes in.
 
 ```javascript
 mergeIntoState(newData)
