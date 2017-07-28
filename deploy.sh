@@ -8,7 +8,7 @@ if [ -z "$PULL_REQUEST_NUMBER" ]; then
 fi
 
 echo "Detected pull request #$PULL_REQUEST_NUMBER."
-SEMVER_CHANGE=$(curl "https://maintainerd.divmain.com/api/semver?repoPath=FormidableLabs/rapscallion&installationId=37499&prNumber=$PULL_REQUEST_NUMBER")
+SEMVER_CHANGE=$(curl "https://maintainerd.divmain.com/api/semver?repoPath=FormidableLabs/freactal&installationId=37499&prNumber=$PULL_REQUEST_NUMBER")
 if [ -z "$SEMVER_CHANGE" ]; then
     echo "No semver selection found; aborting publish."
     exit 0
@@ -23,9 +23,8 @@ git config --global user.name "Dale Bustad (bot)"
 git config --global user.email "dale@divmain.com"
 
 eval npm version "$SEMVER_CHANGE"
-npm publish
 
-git remote add origin-deploy https://${GH_TOKEN}@github.com/FormidableLabs/rapscallion.git > /dev/null 2>&1
+git remote add origin-deploy https://${GH_TOKEN}@github.com/FormidableLabs/freactal.git > /dev/null 2>&1
 git push --quiet --tags origin-deploy master
 
 echo "Done!"
