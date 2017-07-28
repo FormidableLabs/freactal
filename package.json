@@ -10,8 +10,7 @@
     "check": "npm run lint && npm run test",
     "test": "mocha spec/",
     "lint": "eslint src spec",
-    "preversion": "npm run build",
-    "postversion": "npm publish && git push origin --tags"
+    "preversion": "npm run build"
   },
   "repository": {
     "type": "git",
