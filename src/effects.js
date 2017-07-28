@@ -16,7 +16,7 @@ export const getEffects = (hocState, effectDefs, parentEffects) => {
       .then(applyReducer);
 
     return memo;
-  }, Object.assign({}, parentEffects));
+  }, Object.assign({}, parentEffects, { initialize: null }));
 
   return effects;
 };
