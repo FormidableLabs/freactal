@@ -1,5 +1,5 @@
 import "isomorphic-fetch";
-import { update } from "../../..";
+import { update, mergeIntoState } from "../../..";
 
 const IS_BROWSER = typeof window === "object";
 
@@ -15,7 +15,7 @@ export const fetchTodos = wrapWithPending(url =>
   fetch(url)
     .then(delay(2000))
     .then(result => result.json())
-    .then(json => update({ todos: json }))
+    .then(json => mergeIntoState({ todos: json }))
 );
 
 export const initialize = effects =>
@@ -23,4 +23,4 @@ export const initialize = effects =>
   Promise.resolve() :
   fetch("https://jsonplaceholder.typicode.com/todos")
     .then(result => result.json())
-    .then(json => update({ todos: json.slice(0, 10) }));
+    .then(json => mergeIntoState({ todos: json.slice(0, 10) }));

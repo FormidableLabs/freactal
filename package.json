@@ -37,7 +37,7 @@
     "babel-cli": "^6.24.0",
     "babel-eslint": "^7.2.1",
     "babel-plugin-transform-react-jsx": "^6.23.0",
-    "babel-preset-latest": "^6.24.0",
+    "babel-preset-env": "^1.6.0",
     "chai": "^3.5.0",
     "chai-enzyme": "^0.6.1",
     "cheerio": "^0.22.0",

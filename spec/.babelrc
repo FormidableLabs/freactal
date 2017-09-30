@@ -4,6 +4,6 @@
     "transform-react-jsx"
   ],
   "presets": [
-  	["latest", { "es2017": false }]
+    ["env", { "targets": { "node": "current" } }]
   ]
 }
