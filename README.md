@@ -870,8 +870,23 @@ provideState({
 });
 ```
 
-**NOTE:** The `effects` object that is passed to each effect is _not_ the same as the outer effects object that you define here.  Instead, that object is a composition of the hierarchy of stateful effects.
+**NOTE 1:** The effects are called synchronously so you that you can use directly any passed events:
 
+```javascript
+provideState({
+  effects: {
+    onInputChange: (effects, event) =>
+      state =>
+        Object.assign({}, state, { inputValue: event.target.value })
+  }
+});
+
+const MyComponent = injectState(({ effects, state }) => (
+  <input onChange={effects.onInputChange} value={state.inputValue} />
+))
+```
+
+**NOTE 2:** The `effects` object that is passed to each effect is _not_ the same as the outer effects object that you define here.  Instead, that object is a composition of the hierarchy of stateful effects.
 
 ##### `initialize`
 
