@@ -837,6 +837,15 @@ provideState({
   })
 })
 ```
+Component props can be passed to `initialState` like so : 
+
+```javascript
+provideState({
+  initialState: ({ value }) => ({
+    a: value
+  })
+})
+```
 
 
 #### `effects`
@@ -891,6 +900,8 @@ provideState({
   }
 })
 ```
+
+Props can't be passed to `computed` 
 
 #### `middleware`
 
