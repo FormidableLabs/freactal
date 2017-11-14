@@ -842,7 +842,8 @@ Component props can be passed to `initialState` like so :
 ```javascript
 provideState({
   initialState: ({ value }) => ({
-    a: value
+    a: value,
+    b: "set here"
   })
 })
 ```
