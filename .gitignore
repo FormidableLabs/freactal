@@ -38,5 +38,6 @@ jspm_packages
 
 /lib
 /es
+/umd
 
 yarn.lock

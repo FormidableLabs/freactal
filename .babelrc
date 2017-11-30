@@ -11,6 +11,9 @@
           }
         ]
       ]
+    },
+    "umd": {
+      "plugins": ["external-helpers"]
     }
   }
 }
