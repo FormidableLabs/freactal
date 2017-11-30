@@ -38,7 +38,8 @@
   },
   "homepage": "https://github.com/divmain/freactal#readme",
   "peerDependencies": {
-    "react": "^15.6.2 || ^16.0.0"
+    "react": "^15.6.2 || ^16.0.0",
+    "prop-types": "^15.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
@@ -68,7 +69,5 @@
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0"
   },
-  "dependencies": {
-    "prop-types": "15.6.0"
-  }
+  "dependencies": {}
 }
