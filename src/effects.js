@@ -11,8 +11,9 @@ export const getEffects = (hocState, effectDefs, parentEffects) => {
   const effects = Object.keys(effectDefs).reduce((memo, effectKey) => {
     const effectFn = effectDefs[effectKey];
 
-    memo[effectKey] = (...args) => Promise.resolve()
-      .then(() => effectFn(effects, ...args))
+    memo[effectKey] = (...args) => new Promise(resolve =>
+      resolve(effectFn(effects, ...args))
+    )
       .then(applyReducer);
 
     return memo;
