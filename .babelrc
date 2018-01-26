@@ -1,6 +1,19 @@
 {
-  "plugins": [
-    "transform-react-jsx"
-  ],
-  "presets": ["env"]
+  "plugins": ["transform-react-jsx"],
+  "presets": [["env", { "modules": false }]],
+  "env": {
+    "commonjs": {
+      "presets": [
+        [
+          "env",
+          {
+            "modules": "commonjs"
+          }
+        ]
+      ]
+    },
+    "umd": {
+      "plugins": ["external-helpers"]
+    }
+  }
 }

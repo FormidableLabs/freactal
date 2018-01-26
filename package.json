@@ -3,9 +3,16 @@
   "version": "2.0.1",
   "description": "",
   "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
   "scripts": {
-    "build": "rm -rf lib/ && npm run build-lib",
-    "build-lib": "babel -d lib/ src/",
+    "build": "npm run clean && npm run build-lib && npm run build-es && npm run build-umd",
+    "build-lib": "BABEL_ENV=commonjs babel -d lib/ src/",
+    "build-es": "babel -d es/ src/",
+    "build-umd": "npm run build-umd:dev && npm run build-umd:prod",
+    "build-umd:dev": "BABEL_ENV=umd rollup -c",
+    "build-umd:prod": "BABEL_ENV=umd NODE_ENV=production rollup -c",
+    "clean": "rm -rf lib/ es/ umd/",
     "watch": "nodemon --watch ./src --exec npm run build-lib",
     "check": "npm run lint && npm run test",
     "test": "mocha spec/",
@@ -31,12 +38,15 @@
   },
   "homepage": "https://github.com/divmain/freactal#readme",
   "peerDependencies": {
-    "react": "^15.6.2 || ^16.0.0"
+    "react": "^15.6.2 || ^16.0.0",
+    "prop-types": "^15.6.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
     "babel-eslint": "^7.2.1",
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-react-jsx": "^6.23.0",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.10",
     "babel-preset-env": "^1.6.0",
     "chai": "^3.5.0",
     "chai-enzyme": "1.0.0-beta.0",
@@ -53,10 +63,11 @@
     "react": "15.6.2",
     "react-dom": "15.6.2",
     "react-test-renderer": "^15.5.4",
+    "rollup": "^0.52.0",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-uglify": "^2.0.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.9.0"
   },
-  "dependencies": {
-    "prop-types": "15.6.0"
-  }
+  "dependencies": {}
 }
