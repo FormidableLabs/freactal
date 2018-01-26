@@ -1,4 +1,6 @@
 import babel from "rollup-plugin-babel";
+import commonjs from "rollup-plugin-commonjs";
+import resolve from "rollup-plugin-node-resolve";
 import uglify from "rollup-plugin-uglify";
 
 const name = process.env.NODE_ENV === "production"
@@ -13,12 +15,23 @@ const config = {
     format: "umd"
   },
   name: "Freactal",
-  external: ["react", "prop-types"],
+  external: ["react"],
   globals: {
-    "react": "React",
-    "prop-types": "PropTypes"
+    "react": "React"
   },
   plugins: [
+    resolve(),
+    commonjs({
+      include: [
+        "node_modules/**"
+      ],
+      namedExports: {
+        // Manually specify named `import`s from CJS libraries
+        "node_modules/prop-types/index.js": [
+          "object"
+        ]
+      }
+    }),
     babel()
   ]
 };
