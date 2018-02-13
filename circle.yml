@@ -1,3 +1,7 @@
+dependencies:
+  pre:
+    - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+
 test:
   override:
     - npm run build && npm run check
