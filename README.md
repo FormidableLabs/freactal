@@ -875,9 +875,11 @@ provideState({
 ```javascript
 provideState({
   effects: {
-    onInputChange: (effects, event) =>
-      state =>
-        Object.assign({}, state, { inputValue: event.target.value })
+    onInputChange: (effects, event) => {
+      const { value } = event.target
+      return state =>
+        Object.assign({}, state, { inputValue: value })
+    }
   }
 });
 
