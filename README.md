@@ -1177,9 +1177,9 @@ import { provideState, hydrate } from "freactal";
 
 const IS_BROWSER = typeof window === "object";
 const stateTemplate = provideState({
-  initialState: () => IS_BROWSER ?
+  initialState: IS_BROWSER ?
     hydrate(window.__state__) :
-    { /* your typical state values */ },
+    () => { /* your typical state values */ },
   effects: { /* ... */ },
   computed: { /* ... */ }
 });
@@ -1194,9 +1194,9 @@ import { provideState, hydrate } from "freactal";
 
 const IS_BROWSER = typeof window === "object";
 const stateTemplate = provideState({
-  initialState: () => IS_BROWSER ?
+  initialState: IS_BROWSER ?
     hydrate() :
-    { /* your typical state values */ },
+    () => { /* your typical state values */ },
   effects: { /* ... */ },
   computed: { /* ... */ }
 });
