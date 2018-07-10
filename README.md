@@ -32,6 +32,9 @@ If you encounter an issue with freactal, please [look to see](https://github.com
 When submitting a bug report, make sure to include a repro.  The best way to do this, is to fork the [freactal-sketch sandbox](https://codesandbox.io/s/github/divmain/freactal-sketch/tree/master/), modify it so that the bug is observable, and include a link in your bug report.
 
 
+<a href="#table-of-contents"><p align="center" style="margin-top: 400px"><img src="https://cloud.githubusercontent.com/assets/5016978/24835268/f983b58e-1cb1-11e7-8885-6c029cbbd224.png" height="60" width="60" /></p></a>
+
+
 ## Table of Contents
 
 - [Guide](#guide)
