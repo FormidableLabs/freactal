@@ -55,6 +55,7 @@ When submitting a bug report, make sure to include a repro.  The best way to do 
     - [`initialState`](#initialstate)
     - [`effects`](#effects)
       - [`initialize`](#initialize)
+      - [`finalize`](#finalize)
     - [`computed`](#computed)
     - [`middleware`](#middleware)
   - [`injectState`](#injectstate)
@@ -909,6 +910,11 @@ Each state container can define a special effect called `initialize`.  This effe
 
 Note: this effect will NOT be passed down to a component's children.
 
+##### `finalize`
+
+`initialize` counterpart, invoked immediately before a component is unmounted and destroyed (browser only).
+
+Note: this effect will NOT be passed down to a component's children.
 
 #### `computed`
 
