@@ -569,7 +569,7 @@ Its important to notice here that `Child` was able to access state values from b
 
 This pattern allows you to co-locate your code by feature, rather than by function.  In other words, if you're rolling out a new feature for your application, all of that new code - UI, state, effects, etc - can go in one place, rather than scattered across your code-base.
 
-Because of this, refactoring becomes easier.  Want to move a component to a different part of your application?  Just move the directory and update the import from the parents.  What if this component accesses parent state?  If that parent is still an anscestor, you don't have to change a thing.  If it's not, moving that state to a more appropriate place should be part of the refactor anyway.
+Because of this, refactoring becomes easier.  Want to move a component to a different part of your application?  Just move the directory and update the import from the parents.  What if this component accesses parent state?  If that parent is still an ancestor, you don't have to change a thing.  If it's not, moving that state to a more appropriate place should be part of the refactor anyway.
 
 But one word of warning: accessing parent state can be powerful, and very useful, but it also necessarily couples the child state to the parent state.  While the coupling is a "loose" coupling, it still may introduce complexity that should be carefully thought-out.
 
