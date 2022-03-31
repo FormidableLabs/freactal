@@ -54,6 +54,17 @@ describe("state provider", () => {
     });
   });
 
+  describe("upon unmounting", () => {
+    it("invokes its `finalize` effect", () => {
+      return new Promise(resolve => {
+        const Stateful = getStateful({
+          effects: { finalize: resolve }
+        });
+        mount(<Stateful />).unmount();
+      });
+    });
+  });
+
   describe("context", () => {
     it("preserves parent freactal context where no conflicts exist", () => {
       const context = {
